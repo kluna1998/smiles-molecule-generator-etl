@@ -1,0 +1,21 @@
+{
+    "model": "RandomForestRegressor",
+    "representation": "Morgan radius=2, n_bits=2048",
+    "split": "Murcko scaffold split",
+    "n_train": 8402,
+    "n_valid": 1065,
+    "n_test": 999,
+    "valid": {
+        "MAE": 0.6483040398979637,
+        "RMSE": 0.829728357252856,
+        "R2": 0.5837658754931009,
+        "Spearman": 0.772901327103646
+    },
+    "test": {
+        "MAE": 0.6493200895659205,
+        "RMSE": 0.8333415620777154,
+        "R2": 0.6049353646087745,
+        "Spearman": 0.7979729794937087
+    },
+    "created_at": "2026-05-12T15:39:11.763425"
+}

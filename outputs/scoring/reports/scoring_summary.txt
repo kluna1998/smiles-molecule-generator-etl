@@ -1,0 +1,15 @@
+Resumen del notebook 03 — scoring y selección de candidatas EGFR
+====================================================================
+Fecha de ejecución: 2026-05-12T16:13:14.364399
+
+Conteos principales:
+- Moléculas generadas válidas y únicas: 9068
+- Moléculas tras filtro químico básico: 8241
+- Moléculas con scoring completo: 8241
+- Moléculas elegibles: 2133
+- Moléculas Pareto: 37
+- Top100 diverso: 37
+- Shortlist final: 30
+
+Archivo principal para el notebook 04:
+- /home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/final/shortlist30_final_candidates.csv

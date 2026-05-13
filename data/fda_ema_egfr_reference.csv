@@ -1,0 +1,7 @@
+drug_name,smiles,agency,status,generation,notes
+gefitinib,COc1cc2ncnc(c2cc1OCCCN1CCOCC1)Nc1ccc(c(c1)Cl)F,FDA/EMA,approved,1st generation,EGFR TKI
+erlotinib,COCCOc1cc2c(ncnc2cc1OCCOC)Nc1cccc(c1)C#C,FDA/EMA,approved,1st generation,EGFR TKI
+afatinib,CN(C)CC=CC(=O)NC1=C(C=C2C(=C1)C(=NC=N2)NC3=CC(=C(C=C3)F)Cl)OC4CCOC4,FDA/EMA,approved,2nd generation,irreversible EGFR/ERBB TKI
+dacomitinib,COc1cc2ncnc(c2cc1NC(=O)C=CCN1CCCCC1)Nc1ccc(c(c1)Cl)F,FDA/EMA,approved,2nd generation,irreversible EGFR TKI
+osimertinib,C=CC(=O)Nc1cc(Nc2nccc(n2)c2cn(c3c2cccc3)C)c(cc1N(CCN(C)C)C)OC,FDA/EMA,approved,3rd generation,EGFR T790M/sensitizing mutations
+lazertinib,C=CC(=O)Nc1cc(Nc2nccc(n2)n2cc(c(n2)c2ccccc2)CN(C)C)c(cc1N1CCOCC1)OC,FDA/EMA,approved,3rd generation,approved with amivantamab

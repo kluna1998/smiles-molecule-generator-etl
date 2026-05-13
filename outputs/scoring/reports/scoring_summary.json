@@ -1,0 +1,78 @@
+{
+    "created_at": "2026-05-12T16:13:14.364399",
+    "seed": 42,
+    "input_files": {
+        "generated_molecules": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/mrl/generated_molecules.csv",
+        "training_data": "/home/kluna/TFM/egfr_pipeline_tfm/data/model_procesed_dataset.csv",
+        "reference_data": "/home/kluna/TFM/egfr_pipeline_tfm/data/model_preprocesed_dataset.csv",
+        "approved_egfr_reference": "/home/kluna/TFM/egfr_pipeline_tfm/data/fda_ema_egfr_reference.csv"
+    },
+    "output_files": {
+        "descriptors": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/01_generated_molecules_descriptors.csv",
+        "filtered": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/02_generated_molecules_filtered.csv",
+        "admet_input": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/03_admet_ai_input.csv",
+        "admet_predictions": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/04_admet_ai_predictions.csv",
+        "scored": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/05_generated_molecules_scored.csv",
+        "eligible": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/06_eligible_candidates.csv",
+        "pareto": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/intermediate/07_pareto_candidates.csv",
+        "top100": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/final/top100_pareto_diverse.csv",
+        "shortlist30": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/final/shortlist30_final_candidates.csv",
+        "activity_model": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/models/egfr_pic50_random_forest.pkl",
+        "activity_metrics": "/home/kluna/TFM/egfr_pipeline_tfm/outputs/scoring/models/egfr_pic50_random_forest_metrics.json"
+    },
+    "counts": {
+        "generated_valid_unique": 9068,
+        "filtered_basic_chemical": 8241,
+        "scored": 8241,
+        "eligible": 2133,
+        "pareto": 37,
+        "top100": 37,
+        "shortlist30": 30
+    },
+    "basic_filters": {
+        "mol_wt_min": 180,
+        "mol_wt_max": 650,
+        "rdkit_logp_min": -1,
+        "rdkit_logp_max": 6.5,
+        "tpsa_min": 20,
+        "tpsa_max": 160,
+        "hbd_max": 5,
+        "hba_max": 12,
+        "rot_bonds_max": 12,
+        "heavy_atoms_min": 10,
+        "heavy_atoms_max": 70,
+        "ro5_violations_max": 2,
+        "qed_min": 0.25
+    },
+    "eligibility_thresholds": {
+        "min_tanimoto_training": 0.3,
+        "min_predicted_pIC50": 6.0,
+        "min_admet_hard_pass_fraction": 0.75
+    },
+    "pareto_objectives": [
+        [
+            "predicted_pIC50",
+            "max"
+        ],
+        [
+            "score_admet",
+            "max"
+        ],
+        [
+            "score_admet_hard",
+            "max"
+        ],
+        [
+            "score_training_similarity",
+            "max"
+        ],
+        [
+            "score_qed",
+            "max"
+        ],
+        [
+            "score_ro5",
+            "max"
+        ]
+    ]
+}
