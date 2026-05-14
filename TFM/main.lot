@@ -1,0 +1,15 @@
+\babel@toc {spanish}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Estructura modular de los notebooks empleados en el desarrollo de la pipeline.}}{30}{}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Hiperpar\IeC {\'a}metros utilizados durante el fine-tuning y la generaci\IeC {\'o}n final.}}{33}{}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Filtros fisicoqu\IeC {\'\i }micos b\IeC {\'a}sicos aplicados a las mol\IeC {\'e}culas generadas.}}{35}{}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Rendimiento del modelo QSAR de pIC50 basado en Random Forest y fingerprints Morgan.}}{36}{}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Reglas ADMET duras aplicadas durante el scoring.}}{37}{}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Pesos utilizados para el c\IeC {\'a}lculo de \texttt {reward\_score}.}}{39}{}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Reducci\IeC {\'o}n progresiva del conjunto molecular durante la pipeline.}}{41}{}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

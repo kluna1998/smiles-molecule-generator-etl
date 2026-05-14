@@ -1,0 +1,78 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {chapter}{\numberline {1}Introducci\IeC {\'o}n}{9}{}%
+\contentsline {section}{\numberline {1.1}Contexto y justificaci\IeC {\'o}n}{9}{}%
+\contentsline {section}{\numberline {1.2}Objetivos}{10}{}%
+\contentsline {subsection}{\numberline {1.2.1}Objetivo principal}{10}{}%
+\contentsline {subsection}{\numberline {1.2.2}Objetivos espec\IeC {\'\i }ficos}{11}{}%
+\contentsline {section}{\numberline {1.3}Impacto en sostenibilidad y \IeC {\'e}tico-social}{11}{}%
+\contentsline {section}{\numberline {1.4}Enfoque y m\IeC {\'e}todo seguido}{12}{}%
+\contentsline {section}{\numberline {1.5}Planificaci\IeC {\'o}n del trabajo}{13}{}%
+\contentsline {subsection}{\numberline {1.5.1}Fase 1: Definici\IeC {\'o}n y planificaci\IeC {\'o}n del proyecto (M1)}{13}{}%
+\contentsline {subsection}{\numberline {1.5.2}Fase 2: Estado del arte (M2)}{13}{}%
+\contentsline {subsection}{\numberline {1.5.3}Fase 3: Dise\IeC {\~n}o e implementaci\IeC {\'o}n de la pipeline (M3)}{13}{}%
+\contentsline {subsection}{\numberline {1.5.4}Fase 4: Evaluaci\IeC {\'o}n experimental y redacci\IeC {\'o}n final (M4)}{14}{}%
+\contentsline {subsection}{\numberline {1.5.5}Riesgos potenciales y planes de mitigaci\IeC {\'o}n}{14}{}%
+\contentsline {section}{\numberline {1.6}Breve sumario de productos obtenidos}{14}{}%
+\contentsline {section}{\numberline {1.7}Breve descripci\IeC {\'o}n de los otros cap\IeC {\'\i }tulos de la memoria}{14}{}%
+\contentsline {section}{\numberline {1.8}Declaraci\IeC {\'o}n sobre el uso de inteligencia artificial generativa}{14}{}%
+\contentsline {chapter}{\numberline {2}Estado del arte}{16}{}%
+\contentsline {section}{\numberline {2.1}Descubrimiento de F\IeC {\'a}rmacos Asistido por IA}{16}{}%
+\contentsline {subsection}{\numberline {2.1.1}Evoluci\IeC {\'o}n de la computaci\IeC {\'o}n qu\IeC {\'\i }mica}{16}{}%
+\contentsline {section}{\numberline {2.2}Par\IeC {\'a}metros de Calidad Molecular en el Dise\IeC {\~n}o \textit {de novo} de F\IeC {\'a}rmacos}{17}{}%
+\contentsline {subsection}{\numberline {2.2.1}Peque\IeC {\~n}as mol\IeC {\'e}culas como modalidad terap\IeC {\'e}utica}{17}{}%
+\contentsline {subsection}{\numberline {2.2.2}Propiedades drug-like y calidad molecular}{18}{}%
+\contentsline {subsubsection}{Perfil ADMET}{19}{}%
+\contentsline {subsection}{\numberline {2.2.3}EGFR como diana terap\IeC {\'e}utica}{19}{}%
+\contentsline {section}{\numberline {2.3}Representaci\IeC {\'o}n Computacional de Mol\IeC {\'e}culas y Prote\IeC {\'\i }nas}{20}{}%
+\contentsline {subsection}{\numberline {2.3.1}Representaci\IeC {\'o}n lineal mediante SMILES}{20}{}%
+\contentsline {subsection}{\numberline {2.3.2}Representaci\IeC {\'o}n basada en grafos moleculares}{21}{}%
+\contentsline {subsection}{\numberline {2.3.3}Representaci\IeC {\'o}n de prote\IeC {\'\i }nas y sitios de uni\IeC {\'o}n}{21}{}%
+\contentsline {section}{\numberline {2.4}Modelado predictivo de propiedades moleculares}{21}{}%
+\contentsline {subsection}{\numberline {2.4.1}Modelos QSAR en descubrimiento de f\IeC {\'a}rmacos}{22}{}%
+\contentsline {subsubsection}{QSAR como aproximaci\IeC {\'o}n a la afinidad frente a una diana}{22}{}%
+\contentsline {subsection}{\numberline {2.4.2}Predicci\IeC {\'o}n computacional de propiedades ADMET}{23}{}%
+\contentsline {subsubsection}{Herramientas modernas de predicci\IeC {\'o}n ADMET basadas en IA}{24}{}%
+\contentsline {section}{\numberline {2.5}Modelos generativos moleculares}{24}{}%
+\contentsline {subsection}{\numberline {2.5.1}Generaci\IeC {\'o}n molecular \textit {de novo}}{24}{}%
+\contentsline {subsection}{\numberline {2.5.2}Modelos generativos modernos}{25}{}%
+\contentsline {subsection}{\numberline {2.5.3}Modelos preentrenados en qu\IeC {\'\i }mica molecular}{25}{}%
+\contentsline {section}{\numberline {2.6}Optimizaci\IeC {\'o}n multiobjetivo en dise\IeC {\~n}o molecular}{26}{}%
+\contentsline {subsection}{\numberline {2.6.1}Naturaleza multiobjetivo del descubrimiento de f\IeC {\'a}rmacos}{26}{}%
+\contentsline {subsection}{\numberline {2.6.2}Estrategias de optimizaci\IeC {\'o}n molecular}{26}{}%
+\contentsline {subsection}{\numberline {2.6.3}Dominancia de Pareto y soluciones no dominadas}{27}{}%
+\contentsline {subsection}{\numberline {2.6.4}M\IeC {\'e}tricas de evaluaci\IeC {\'o}n multiobjetivo}{28}{}%
+\contentsline {subsubsection}{Hipervolumen (\textit {Hypervolume})}{28}{}%
+\contentsline {subsubsection}{Dispersi\IeC {\'o}n (\textit {Spread})}{28}{}%
+\contentsline {subsubsection}{N\IeC {\'u}mero de soluciones no dominadas}{28}{}%
+\contentsline {subsubsection}{Funciones agregadas (DScore)}{28}{}%
+\contentsline {chapter}{\numberline {3}Materiales y m\IeC {\'e}todos}{29}{}%
+\contentsline {section}{\numberline {3.1}Dise\IeC {\~n}o general de la metodolog\IeC {\'\i }a}{29}{}%
+\contentsline {section}{\numberline {3.2}Materiales, entorno y librer\IeC {\'\i }as empleadas}{30}{}%
+\contentsline {section}{\numberline {3.3}Preprocesado del dataset de bioactividad EGFR}{31}{}%
+\contentsline {subsection}{\numberline {3.3.1}Datos de entrada y exportaci\IeC {\'o}n desde ChEMBL}{31}{}%
+\contentsline {subsection}{\numberline {3.3.2}Datos de entrada}{31}{}%
+\contentsline {subsection}{\numberline {3.3.3}Canonicalizaci\IeC {\'o}n y agregaci\IeC {\'o}n molecular}{32}{}%
+\contentsline {subsection}{\numberline {3.3.4}Productos del preprocesado}{32}{}%
+\contentsline {section}{\numberline {3.4}Fine-tuning del modelo generativo molecular}{33}{}%
+\contentsline {subsection}{\numberline {3.4.1}Modelo generativo seleccionado}{33}{}%
+\contentsline {subsection}{\numberline {3.4.2}Monitorizaci\IeC {\'o}n por epoch y selecci\IeC {\'o}n del checkpoint}{33}{}%
+\contentsline {subsection}{\numberline {3.4.3}Generaci\IeC {\'o}n final y limpieza}{34}{}%
+\contentsline {section}{\numberline {3.5}C\IeC {\'a}lculo de descriptores y filtro qu\IeC {\'\i }mico b\IeC {\'a}sico}{34}{}%
+\contentsline {section}{\numberline {3.6}Modelo QSAR para estimaci\IeC {\'o}n de actividad frente a EGFR}{35}{}%
+\contentsline {subsection}{\numberline {3.6.1}Partici\IeC {\'o}n por scaffold}{35}{}%
+\contentsline {subsection}{\numberline {3.6.2}Modelo predictivo y m\IeC {\'e}tricas}{36}{}%
+\contentsline {section}{\numberline {3.7}Similitud estructural y control de novedad}{36}{}%
+\contentsline {section}{\numberline {3.8}Integraci\IeC {\'o}n de predicciones ADMET-AI}{37}{}%
+\contentsline {subsection}{\numberline {3.8.1}Filtros ADMET duros}{37}{}%
+\contentsline {subsection}{\numberline {3.8.2}Score ADMET blando}{38}{}%
+\contentsline {section}{\numberline {3.9}Construcci\IeC {\'o}n de scores interpretables}{38}{}%
+\contentsline {section}{\numberline {3.10}Pool elegible y selecci\IeC {\'o}n mediante Pareto}{39}{}%
+\contentsline {subsection}{\numberline {3.10.1}Definici\IeC {\'o}n del conjunto elegible}{39}{}%
+\contentsline {subsection}{\numberline {3.10.2}Objetivos de Pareto}{40}{}%
+\contentsline {section}{\numberline {3.11}Comparaci\IeC {\'o}n con inhibidores EGFR aprobados o de referencia}{40}{}%
+\contentsline {section}{\numberline {3.12}Exportaci\IeC {\'o}n, trazabilidad y productos obtenidos}{41}{}%
+\contentsline {section}{\numberline {3.13}Limitaciones metodol\IeC {\'o}gicas}{41}{}%
+\contentsline {chapter}{\numberline {4}Resultados}{42}{}%
+\contentsline {chapter}{\numberline {5}Conclusiones y trabajos futuros}{43}{}%
+\contentsline {chapter}{\numberline {6}Glosario}{44}{}%
+\contentsline {chapter}{\numberline {7}Bibliograf\IeC {\'\i }a}{45}{}%
