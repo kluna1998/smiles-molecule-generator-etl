@@ -1058,26 +1058,359 @@ La metodología presenta limitaciones importantes que deben ser consideradas al 
 
 Estas limitaciones no invalidan el enfoque, pero delimitan correctamente su alcance. El resultado debe interpretarse como una arquitectura de priorización temprana para explorar el espacio químico y seleccionar moléculas prometedoras para análisis posteriores, no como una validación farmacológica definitiva.
 
+
 \chapter{Resultados}
+\label{chap:resultados}
 
-Detallad en este apartado los resultados obtenidos utilizando la metodología descrita en el apartado anterior.
+Este capítulo presenta los resultados obtenidos tras ejecutar el flujo computacional completo de generación, evaluación y selección molecular. El objetivo no es demostrar que las moléculas finales sean inhibidores de EGFR validadas, sino comprobar si el flujo propuesto permite transformar una muestra generativa amplia en una cartera reducida de hipótesis moleculares priorizadas bajo criterios explícitos.
 
-Las figuras tienen que estar explicadas y citadas en el texto, como la \ref{fig:my_label}, en la cual se muestra el error en función de la distancia, en unidades arbitrarias. En todas las gráficas tiene que haber el título de los ejes.
+La lectura de los resultados se organiza en seis bloques. En primer lugar, se evalúa la calidad del modelo generativo y la elección de la versión final del modelo generativo. En segundo lugar, se analiza la reducción progresiva del conjunto molecular y el efecto del filtro fisicoquímico básico. En tercer lugar, se presentan el rendimiento del modelo QSAR y la distribución de actividad predicha. Posteriormente, se describe la integración de criterios ADMET y la definición del conjunto elegible. Finalmente, se analiza la selección mediante dominancia de Pareto y se interpreta el conjunto final de candidatas desde las perspectivas de actividad, calidad molecular, ADMET, novedad estructural, diversidad y perfiles de riesgo.
 
-\begin{figure}[!htbp]
+\section{Resultado global}
+
+La Figura~\ref{fig:reduccion_pipeline} resume la reducción progresiva del conjunto molecular a lo largo del flujo computacional. El proceso partió de 10.000 SMILES brutos generados con el modelo MRL ajustado al dominio químico asociado a EGFR. Tras la validación con RDKit, la canonicalización, la eliminación de duplicados y la exclusión de coincidencias exactas con el conjunto de entrenamiento, se obtuvieron 9.068 moléculas válidas, únicas y nuevas respecto al conjunto empleado durante el ajuste fino.
+
+Sobre estas moléculas se aplicó un filtro fisicoquímico básico, que redujo el conjunto a 8.241 moléculas. A continuación, las moléculas filtradas fueron evaluadas mediante el modelo QSAR de actividad frente a EGFR, las predicciones ADMET-AI, el cálculo de similitud estructural frente al conjunto de entrenamiento y el cálculo de puntuaciones normalizadas. La aplicación de criterios mínimos de elegibilidad redujo el conjunto a 2.133 moléculas. Finalmente, la selección mediante dominancia de Pareto identificó 37 soluciones no dominadas, a partir de las cuales se obtuvo un conjunto final de 30 candidatas tras aplicar una ordenación auxiliar por \texttt{reward\_score} y un control de diversidad por scaffold de Murcko.
+
+\begin{figure}[H]
     \centering
-    \includegraphics[width=7truecm]{Rplotmanh.png}
-    \caption{Error en función de la distancia en unidades arbitrarias.}
-    \label{fig:my_label}
+    \includegraphics[width=0.95\textwidth]{resultados_figuras/fig_01_reduccion_pipeline.png}
+    \caption{Reducción progresiva del conjunto molecular durante el flujo computacional.}
+    \label{fig:reduccion_pipeline}
 \end{figure}
 
-%\chapter{Discusión}
-%Discusión de los resultados en el contexto del proyecto. Es en este apartado donde cobran sentido y en el cual se responden las preguntas de investigación y se muestra como los resultados dan respuesta a los problemas planteados.
+La Tabla~\ref{tab:resumen_reduccion_pipeline_resultados} cuantifica esta reducción. El resultado muestra que el conjunto final de candidatas no procede directamente del modelo generativo, sino de un proceso posterior de cribado y priorización. Esta distinción es importante: el modelo generativo proporciona un espacio inicial de búsqueda, mientras que la calidad final del conjunto seleccionado depende de la evaluación multiobjetivo posterior.
 
-%Esta parte puede ser que no aplique según el tipo de trabajo.
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{p{7.8cm} r p{3.8cm}}
+        \hline
+        \textbf{Etapa} & \textbf{Moléculas} & \textbf{Interpretación} \\
+        \hline
+        SMILES brutos generados & 10.000 & Muestra inicial del generador. \\
+        SMILES válidos según RDKit & 9.082 & Estructuras químicamente interpretables. \\
+        Moléculas válidas únicas & 9.079 & Duplicados canónicos eliminados. \\
+        Moléculas válidas, únicas y nuevas frente al conjunto de entrenamiento & 9.068 & Entrada limpia a la evaluación. \\
+        Moléculas tras filtro fisicoquímico básico & 8.241 & 90,88\% del conjunto limpio. \\
+        Moléculas con evaluación completa & 8.241 & Actividad, ADMET, similitud y puntuaciones. \\
+        Moléculas elegibles & 2.133 & 25,88\% del conjunto con evaluación. \\
+        Soluciones no dominadas por Pareto & 37 & Frente de compromiso multiobjetivo. \\
+        Conjunto final de candidatas & 30 & Candidatas priorizadas para análisis. \\
+        \hline
+    \end{tabular}
+    \caption{Resumen cuantitativo de la reducción progresiva del conjunto molecular durante el flujo computacional.}
+    \label{tab:resumen_reduccion_pipeline_resultados}
+\end{table}
 
-%\chapter{Valoración económica}
-%En caso de que corresponda, se incluirá un apartado de ``Valoración económica del trabajo". Este apartado indicará los gastos asociados al desarrollo y mantenimiento del trabajo, así como los beneficios económicos obtenidos. Hay que hacer un análisis final sobre la viabilidad del producto.
+\section{Evaluación del modelo generativo}
+
+El modelo generativo fue evaluado después de cada época del \textit{fine-tunning} mediante una muestra de control de 4.000 SMILES. Se analizaron tres métricas principales: validez RDKit, unicidad canónica y novedad frente al conjunto de entrenamiento. Estas métricas permiten comprobar si el modelo conserva capacidad para generar moléculas válidas, no repetitivas y no copiadas de forma directa del conjunto de datos usado durante el ajuste.
+
+La Figura~\ref{fig:metricas_generativas_epoch} muestra la evolución de estas métricas durante las ocho épocas. La validez disminuyó de forma progresiva desde el 97,00\% en la primera época hasta valores cercanos al 88--89\% en las últimas épocas. La unicidad canónica permaneció muy alta durante todo el proceso, siempre por encima del 99\%. La novedad frente al conjunto de entrenamiento también se mantuvo elevada, aunque empezó a degradarse ligeramente a partir de la quinta época.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{resultados_figuras/fig_02_metricas_generativas_epoch.png}
+    \caption{Evolución de las métricas de calidad generativa durante el ajuste fino. La línea discontinua indica la época 3, seleccionada como versión final del modelo.}
+    \label{fig:metricas_generativas_epoch}
+\end{figure}
+
+La época 3 fue seleccionada como versión final del modelo porque mantenía una validez superior al 90\%, unicidad canónica del 100\% y novedad del 99,94\%. Aunque la época 1 presentaba mejores métricas brutas de validez y novedad, una única pasada por el conjunto de datos podía ser insuficiente para desplazar la distribución generativa hacia patrones químicos más compatibles con el dominio químico asociado a EGFR. Por el contrario, las épocas posteriores a la tercera no aportaron una mejora clara y comenzaron a mostrar señales de degradación progresiva en validez y novedad.
+
+Con el modelo seleccionado se generaron 10.000 SMILES brutos. La generación final produjo 9.082 SMILES válidos, 9.079 moléculas válidas únicas y 9.068 moléculas válidas, únicas y no presentes exactamente en el conjunto de entrenamiento.
+
+\section{Filtrado fisicoquímico y calidad molecular inicial}
+
+Antes de aplicar modelos predictivos más costosos, las 9.068 moléculas generadas se sometieron a un filtro fisicoquímico básico basado en propiedades calculadas con RDKit. Este filtro no pretende demostrar viabilidad farmacológica, sino eliminar estructuras claramente poco plausibles para una exploración inicial de pequeñas moléculas con propiedades tipo fármaco.
+
+Tras aplicar el filtro, se conservaron 8.241 moléculas, lo que representa el 90,88\% del conjunto limpio. Este porcentaje es relevante porque muestra que el modelo no solo generó cadenas SMILES válidas, sino una proporción alta de moléculas con rangos fisicoquímicos razonables.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png}
+    \caption{Distribución de propiedades fisicoquímicas de las moléculas que superaron el filtro básico. Las líneas verticales discontinuas indican los umbrales mínimos o máximos utilizados en cada descriptor.}
+    \label{fig:distribuciones_fisicoquimicas_filtrado}
+\end{figure}
+
+La Figura~\ref{fig:distribuciones_fisicoquimicas_filtrado} muestra que las moléculas retenidas se concentran en rangos compatibles con una exploración inicial de compuestos con propiedades tipo fármaco. El peso molecular presenta una mediana de 375,45 Da y un rango intercuartílico aproximado entre 333 y 429 Da. El LogP se concentra alrededor de valores moderados, con mediana de 3,20. La TPSA se sitúa mayoritariamente en valores intermedios, con mediana de 72,95, lo que sugiere perfiles razonables de polaridad para compuestos pequeños.
+
+La distribución de QED también es favorable en esta fase: la mediana fue 0,684 y el percentil 75 alcanzó 0,797. Además, la mayoría de moléculas no presentó violaciones de Lipinski. En conjunto, el filtrado fisicoquímico permitió conservar un conjunto amplio, pero químicamente más defendible, antes de entrar en la evaluación de actividad y ADMET.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{p{4.2cm} r r r r r}
+        \hline
+        \textbf{Descriptor} & \textbf{Media} & \textbf{Mediana} & \textbf{P25} & \textbf{P75} & \textbf{Rango} \\
+        \hline
+        Peso molecular & 382,51 & 375,45 & 333,31 & 428,87 & 182,18--647,18 \\
+        RDKit LogP & 3,15 & 3,20 & 2,19 & 4,19 & -0,97--6,50 \\
+        TPSA & 74,94 & 72,95 & 56,79 & 91,14 & 20,20--159,70 \\
+        Donadores H & 1,4 & 1 & 1 & 2 & 0--5 \\
+        Aceptores H & 4,81 & 5 & 4 & 6 & 1--12 \\
+        Enlaces rotables & 5,1 & 5 & 4 & 6 & 0--12 \\
+        Átomos pesados & 26,79 & 26 & 23 & 30 & 11--47 \\
+        QED & 0,65 & 0,68 & 0,53 & 0,79 & 0,25--0,94 \\
+        Violaciones Lipinski & 0,17 & 0 & 0 & 0 & 0--2 \\
+        \hline
+    \end{tabular}
+    \caption{Resumen descriptivo de las moléculas que superaron el filtro fisicoquímico básico.}
+    \label{tab:resumen_descriptores_filtrados_resultados}
+\end{table}
+
+\section{Modelo QSAR y actividad predicha frente a EGFR}
+
+La actividad frente a EGFR se estimó mediante un modelo QSAR de regresión entrenado con huellas moleculares Morgan y evaluado mediante partición por scaffold de Murcko. Esta partición es más exigente que una división aleatoria, ya que reduce la probabilidad de evaluar el modelo sobre moléculas estructuralmente muy cercanas a las del entrenamiento.
+
+El conjunto de referencia quedó dividido en 8.402 moléculas de entrenamiento, 1.065 de validación y 999 de prueba. La Tabla~\ref{tab:metricas_qsar_resultados} muestra el rendimiento obtenido.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l c c c c}
+        \hline
+        \textbf{Conjunto} & \textbf{MAE} & \textbf{RMSE} & \textbf{$R^2$} & \textbf{Spearman} \\
+        \hline
+        Validación & 0,648 & 0,830 & 0,584 & 0,773 \\
+        Prueba & 0,649 & 0,833 & 0,605 & 0,798 \\
+        \hline
+    \end{tabular}
+    \caption{Rendimiento del modelo QSAR de regresión para la estimación de pIC$_{50}$ frente a EGFR.}
+    \label{tab:metricas_qsar_resultados}
+\end{table}
+
+El modelo mostró un comportamiento razonable para una tarea de priorización temprana. La correlación de Spearman de 0,798 en prueba indica que el modelo conserva capacidad de ordenación relativa. Sin embargo, el MAE cercano a 0,65 unidades de pIC$_{50}$ impide interpretar las predicciones como valores exactos de potencia biológica. Por tanto, la pIC$_{50}$ predicha se utilizó como señal aproximada de actividad y no como evidencia directa de afinidad experimental.
+
+Al aplicar el modelo sobre las 8.241 moléculas filtradas, la pIC$_{50}$ predicha presentó una media de 6,140 y una mediana de 6,108. En total, 5.445 moléculas fueron clasificadas como activas predichas ($pIC_{50} \geq 6$) y 162 como fuertemente activas ($pIC_{50} \geq 7$). Este resultado confirma que el generador ajustado al dominio químico asociado a EGFR produjo una cantidad relevante de moléculas con señal de actividad favorable, pero también muestra la necesidad de una selección posterior: actividad predicha por sí sola no basta para definir candidatas defendibles.
+
+\section{Similitud estructural y control de dominio}
+
+La novedad estructural se analizó mediante la similitud máxima de Tanimoto frente al conjunto de entrenamiento utilizado durante el \textit{fine-tunning}. Esta métrica permite detectar dos situaciones problemáticas. Por un lado, moléculas demasiado similares al conjunto de entrenamiento pueden ser análogos triviales. Por otro lado, moléculas demasiado alejadas pueden situarse fuera del dominio aproximado de aplicabilidad del modelo QSAR.
+
+En el conjunto filtrado se detectaron dos moléculas con similitud igual o superior a 0,95 frente al conjunto de entrenamiento, consideradas casi copias estructurales. También se observó que 5.100 moléculas tenían similitud inferior a 0,30, lo que sugiere mayor incertidumbre en la extrapolación del modelo predictivo. Por ello, la etapa de elegibilidad exigió una similitud mínima de 0,30 y excluyó las casi copias con Tanimoto igual o superior a 0,95.
+
+La relación entre similitud al conjunto de entrenamiento y actividad predicha mostró una tendencia esperable: las moléculas más próximas al dominio del entrenamiento tendieron a presentar valores medios de pIC$_{50}$ más altos. Por ejemplo, las moléculas con Tanimoto entre 0,50 y 0,70 presentaron una media de pIC$_{50}$ de 6,910, mientras que las moléculas con Tanimoto inferior a 0,25 presentaron una media de 6,007. Esta observación no demuestra mayor actividad real, pero sí indica que el modelo QSAR asigna mejores predicciones a regiones químicas más próximas a las vistas durante su entrenamiento.
+
+\section{ADMET y definición del conjunto elegible}
+
+Las predicciones ADMET-AI se integraron con dos niveles de lectura. En primer lugar, se definieron filtros duros para criterios considerados críticos, como alertas estructurales, toxicidad, hERG, biodisponibilidad oral y absorción intestinal. En segundo lugar, se calculó una puntuación ADMET blanda basada en percentiles frente a moléculas aprobadas de DrugBank.
+
+La fracción media de filtros ADMET duros superados en las 8.241 moléculas con evaluación fue 0,880, con una mediana de 0,889. El valor mínimo fue 0,333 y el máximo 1,000. En cambio, el \texttt{admet\_score} blando mostró muy poca variabilidad en esta ejecución, con media 0,339 y desviación estándar 0,004. Por ese motivo, la interpretación de ADMET se apoyó principalmente en los filtros duros y, especialmente, en el criterio hERG.
+
+Antes de aplicar Pareto se definió un conjunto de moléculas elegibles. Esta etapa fue necesaria para evitar que el frente de Pareto conservara moléculas formalmente no dominadas pero débiles desde el punto de vista farmacológico o químico. Los criterios mínimos fueron: superar el filtro fisicoquímico básico, no ser coincidencia exacta ni casi copia del conjunto de entrenamiento, presentar similitud mínima al conjunto de entrenamiento de 0,30, tener pIC$_{50}$ predicha igual o superior a 6,0 y superar al menos el 75\% de los filtros ADMET duros.
+
+La aplicación conjunta de estos criterios redujo el conjunto de 8.241 moléculas con evaluación a 2.133 moléculas elegibles, equivalente al 25,88\%. Esta fue una de las etapas más selectivas del flujo computacional, ya que combinó actividad estimada, control de similitud y señales ADMET antes de la optimización multiobjetivo.
+
+\section{Selección mediante dominancia de Pareto}
+
+Una vez definido el conjunto elegible, se aplicó selección multiobjetivo mediante dominancia de Pareto. Como resultado, las 2.133 moléculas elegibles se redujeron a 37 soluciones no dominadas. Posteriormente, estas soluciones se ordenaron por \texttt{reward\_score}, utilizado únicamente como criterio auxiliar de priorización, y se aplicó un control de diversidad por scaffold de Murcko. El conjunto final de candidatas quedó formado por 30 moléculas.
+
+Dado que la selección se realizó sobre seis objetivos, el frente de Pareto no puede representarse fielmente en dos dimensiones sin perder información. Por ello, la Figura~\ref{fig:pareto_parallel} utiliza coordenadas paralelas. Cada línea representa una molécula y cada eje vertical corresponde a uno de los objetivos normalizados.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{resultados_figuras/fig_pareto_parallel_eligible_vs_pareto.png}
+    \caption{Representación mediante coordenadas paralelas de los objetivos utilizados en la selección multiobjetivo. Las moléculas elegibles se muestran en gris y las soluciones no dominadas por Pareto se destacan en rojo. Todos los valores se normalizaron entre 0 y 1.}
+    \label{fig:pareto_parallel}
+\end{figure}
+
+La Figura~\ref{fig:pareto_parallel} muestra que las soluciones no dominadas no responden a un único patrón. Algunas moléculas destacan por actividad predicha, otras por QED, otras por cumplimiento ADMET y otras por mejor posición respecto a la ventana de similitud al conjunto de entrenamiento. Este resultado justifica el uso de Pareto: seleccionar únicamente las moléculas con mayor pIC$_{50}$ habría producido una lectura incompleta y más arriesgada.
+
+\section{Distribución global del conjunto final de candidatas}
+
+El conjunto final de 30 candidatas concentra moléculas con actividad predicha favorable, buena calidad molecular global y diversidad estructural. La Figura~\ref{fig:shortlist_distribuciones_globales} resume las principales variables utilizadas para interpretar el conjunto final.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{resultados_figuras/fig_02_distribuciones_shortlist.png}
+    \caption{Distribución de métricas clave en el conjunto final de 30 candidatas: pIC$_{50}$ predicha, \texttt{reward\_score}, QED, fracción de criterios ADMET superados, similitud máxima frente al conjunto de entrenamiento y similitud máxima frente a inhibidores EGFR aprobados o de referencia.}
+    \label{fig:shortlist_distribuciones_globales}
+\end{figure}
+
+La Tabla~\ref{tab:resumen_shortlist_resultados} resume estadísticamente el conjunto final de candidatas. La pIC$_{50}$ predicha media fue 6,891, con una mediana de 6,751 y un valor máximo de 8,171. El QED medio fue 0,749, con una mediana de 0,821, lo que indica que el conjunto final está enriquecido en moléculas con propiedades tipo fármaco favorables. La fracción media de criterios ADMET duros superados fue 0,900, aunque este valor debe interpretarse junto con el análisis individual de criterios, ya que \textbf{hERG} aparece como el principal criterio problemático.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{p{4.5cm} r r r r r}
+        \hline
+        \textbf{Variable} & \textbf{Media} & \textbf{Mediana} & \textbf{P25} & \textbf{P75} & \textbf{Rango} \\
+        \hline
+        pIC$_{50}$ predicha & 6,89 & 6,75 & 6,62 & 7,11 & 6,19--8,17 \\
+        \texttt{reward\_score} & 0,68 & 0,68 & 0,65 & 0,70 & 0,59--0,81 \\
+        QED & 0,75 & 0,82 & 0,64 & 0,89 & 0,28--0,94 \\
+        Violaciones Lipinski & 0,13 & 0 & 0 & 0 & 0--2 \\
+        Fracción ADMET dura & 0,90 & 0,89 & 0,89 & 1 & 0,78--1 \\
+        \hline
+    \end{tabular}
+    \caption{Resumen descriptivo de las principales métricas del conjunto final de candidatas.}
+    \label{tab:resumen_shortlist_resultados}
+\end{table}
+
+La Figura~\ref{fig:actividad_qed_reward} complementa esta lectura mostrando la relación entre actividad predicha y QED. El tamaño de los puntos es proporcional a la puntuación global \texttt{reward\_score}. Esta visualización es útil porque permite detectar que una mayor pIC$_{50}$ predicha no implica necesariamente mejor calidad molecular. En particular, algunas candidatas de alta actividad presentan QED más bajo, lo que refuerza la necesidad de no interpretar la actividad como único criterio de selección.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{resultados_figuras/fig_actividad_vs_qed_reward.png}
+    \caption{Relación entre actividad predicha y calidad molecular tipo fármaco en el conjunto final de candidatas. El tamaño de los puntos es proporcional a la puntuación global \texttt{reward\_score}.}
+    \label{fig:actividad_qed_reward}
+\end{figure}
+
+La Figura~\ref{fig:top_reward_moleculas} muestra la representación molecular de las candidatas con mayor puntuación global \texttt{reward\_score}. Esta figura no debe interpretarse como una validación estructural ni como evidencia de unión a EGFR, sino como apoyo visual para comprobar que las moléculas mejor priorizadas no son representaciones abstractas, sino estructuras químicas concretas que pueden inspeccionarse individualmente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{resultados_figuras/fig_top10_reward_moleculas.png}
+    \caption{Representación molecular de las candidatas con mayor puntuación global \texttt{reward\_score}.}
+    \label{fig:top_reward_moleculas}
+\end{figure}
+
+\section{Actividad y perfil ADMET de las candidatas}
+
+Una vez definido el conjunto final de candidatas, se analizó el cumplimiento individual de los criterios ADMET duros. La Figura~\ref{fig:shortlist_admet_heatmap} muestra qué criterios superó cada candidata. Las filas representan moléculas y las columnas corresponden a criterios ADMET relevantes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{resultados_figuras/fig_shortlist_admet_heatmap.png}
+    \caption{Mapa de cumplimiento de criterios ADMET predichos en las moléculas candidatas finales. Las filas representan candidatas y las columnas corresponden a criterios ADMET relevantes.}
+    \label{fig:shortlist_admet_heatmap}
+\end{figure}
+
+La Tabla~\ref{tab:admet_endpoint_shortlist_resultados} resume el cumplimiento por criterio. La mayoría de candidatas supera los criterios de BRENK, carcinogenicidad, biodisponibilidad oral e HIA. También se observa un cumplimiento alto en PAINS, ClinTox, NIH y AMES. Sin embargo, hERG es claramente el criterio más problemático: solo 12 de las 30 candidatas lo superan, mientras que 18 presentan una señal desfavorable.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l c c c}
+        \hline
+        \textbf{Criterio} & \textbf{Superan} & \textbf{No superan} & \textbf{Porcentaje superado} \\
+        \hline
+        hERG & 12 & 18 & 40,00\% \\
+        NIH & 27 & 3 & 90,00\% \\
+        AMES & 27 & 3 & 90,00\% \\
+        ClinTox & 28 & 2 & 93,33\% \\
+        PAINS & 29 & 1 & 96,67\% \\
+        BRENK & 30 & 0 & 100,00\% \\
+        Carcinogenicidad & 30 & 0 & 100,00\% \\
+        Biodisponibilidad & 30 & 0 & 100,00\% \\
+        HIA & 30 & 0 & 100,00\% \\
+        \hline
+    \end{tabular}
+    \caption{Cumplimiento de criterios ADMET duros en el conjunto final de candidatas.}
+    \label{tab:admet_endpoint_shortlist_resultados}
+\end{table}
+
+Este resultado es uno de los puntos críticos del análisis. El conjunto final de candidatas presenta buenos valores globales de actividad y calidad molecular, pero no puede describirse como un conjunto ADMET completamente limpio. El fallo de hERG en 18 candidatas introduce un riesgo computacional relevante, asociado a posible cardiotoxicidad. Por ello, hERG debe tratarse como una alerta independiente y no quedar escondido dentro de la fracción global de criterios superados.
+
+La Figura~\ref{fig:shortlist_actividad_admet} muestra la relación entre pIC$_{50}$ predicha y fracción de criterios ADMET duros superados. El color indica si la molécula supera o no el criterio hERG.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.68\textwidth]{resultados_figuras/fig_shortlist_pIC50_vs_admet.png}
+    \caption{Relación entre la actividad predicha frente a EGFR y la fracción de criterios ADMET superados en las moléculas candidatas finales. Cada punto representa una candidata; el color indica si supera o no el criterio hERG.}
+    \label{fig:shortlist_actividad_admet}
+\end{figure}
+
+La figura muestra que todas las candidatas conservan una señal de actividad favorable, con pIC$_{50}$ predicha superior a 6. No obstante, también evidencia que mayor actividad predicha no equivale necesariamente a mejor perfil ADMET. Algunas moléculas con alta pIC$_{50}$ estimada no superan hERG o presentan menor fracción de criterios ADMET superados. Por tanto, las candidatas más defendibles no son simplemente las más activas, sino aquellas que combinan actividad razonable, QED favorable, ausencia de violaciones fisicoquímicas graves y menor riesgo ADMET computacional.
+
+\section{Novedad estructural}
+
+La novedad estructural se evaluó desde dos perspectivas. Primero, se calculó la similitud máxima de Tanimoto frente al conjunto de entrenamiento utilizado en el ajuste fino, para valorar si las candidatas eran copias o análogos demasiado cercanos. Segundo, se compararon las candidatas con un conjunto de inhibidores EGFR aprobados, con el objetivo de detectar posibles análogos obvios de fármacos conocidos.
+
+La comparación frente a inhibidores EGFR aprobados mostró que 26 de las 30 candidatas se clasificaron como de alta novedad frente a aprobados, 3 como relacionadas medicinalmente y 1 como análogo cercano de aprobado. Este resultado aporta interés exploratorio al conjunto final de candidatas, aunque también aumenta la incertidumbre externa: una molécula más novedosa puede ser más original, pero no necesariamente más plausible desde el punto de vista experimental.
+
+La Figura~\ref{fig:actividad_training_tanimoto} representa la actividad predicha frente a la similitud máxima al conjunto de entrenamiento. El color corresponde a la puntuación global \texttt{reward\_score}. Muestra cómo se distribuyen las candidatas finales entre actividad estimada y cercanía al dominio de entrenamiento.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{resultados_figuras/fig_shortlist_tanimoto_training_vs_approved.png}
+    \caption{Relación entre la pIC$_{50}$ predicha y la máxima similitud de Tanimoto frente al conjunto de entrenamiento en el conjunto final de candidatas. El color representa la puntuación global \texttt{reward\_score}.}
+    \label{fig:actividad_training_tanimoto}
+\end{figure}
+
+La mayoría de candidatas se sitúa en valores de similitud moderados frente al conjunto de entrenamiento. Esto es deseable porque evita dos extremos: por un lado, moléculas casi copiadas del conjunto de entrenamiento; por otro, moléculas tan alejadas que el modelo QSAR podría estar extrapolando con baja fiabilidad. La candidata C07 constituye un caso especial: presenta la mayor pIC$_{50}$ predicha, pero también una similitud elevada tanto frente al entrenamiento como frente a dacomitinib, lo que reduce su novedad efectiva y obliga a tratarla como una hipótesis de mayor riesgo.
+
+La Figura~\ref{fig:c07_comparacion_tanimoto} muestra precisamente la comparación estructural de C07 con dacomitinib, su referencia EGFR más cercana por Tanimoto. La comparación visual ayuda a interpretar por qué C07 no debe venderse como molécula altamente novedosa, sino como una estructura próxima a una región química conocida.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{resultados_figuras/fig_c07_comparacion_tanimoto.png}
+    \caption{Comparación estructural de la candidata C07 con dacomitinib, inhibidor EGFR aprobado más cercano según Tanimoto.}
+    \label{fig:c07_comparacion_tanimoto}
+\end{figure}
+
+\section{Diversidad química por scaffolds de Murcko}
+
+Además de actividad y ADMET, se evaluó la diversidad estructural del conjunto final de candidatas mediante scaffolds de Murcko. Este análisis responde a una pregunta clave: si las 30 candidatas pertenecieran a una misma familia estructural, el flujo computacional habría colapsado hacia una región química estrecha. En cambio, una mayor diversidad de scaffolds indica que la selección final conserva alternativas químicas reales.
+
+El conjunto final de candidatas contiene 29 scaffolds de Murcko distintos para 30 moléculas, lo que implica un ratio scaffold/molécula de 0,97. Este resultado indica que la selección no se concentró en una única familia química. El control de diversidad aplicado tras Pareto permitió conservar una cartera amplia de núcleos estructurales, algo especialmente útil en una etapa temprana de descubrimiento, donde conviene preservar alternativas para análisis posteriores.
+
+\section{Perfiles interpretativos de candidatas}
+
+El conjunto final de candidatas no debe interpretarse como una ordenación lineal. En un problema multiobjetivo, una molécula puede ser interesante por equilibrio global, otra por actividad, otra por perfil ADMET, otra por novedad y otra por calidad tipo fármaco. Por ello, se seleccionaron perfiles representativos mediante reglas explícitas, evitando escoger candidatas de forma arbitraria.
+
+La Tabla~\ref{tab:perfiles_candidatas_resultados} resume cinco perfiles interpretativos: C05 como candidata más equilibrada con hERG favorable, C07 como molécula con mayor actividad predicha, C06 como mejor perfil ADMET general, C23 como mayor novedad frente a aprobados y C26 como mejor calidad molecular tipo fármaco según QED.
+
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabular}{p{1cm} p{5cm} p{10cm}}
+        \hline
+        \textbf{ID} & \textbf{Perfil} & \textbf{Lectura principal} \\
+        \hline
+        C05 & Más equilibrada con hERG favorable & Buen compromiso global, aunque presenta fallo NIH. \\
+
+        C07 & Mayor actividad predicha & Hipótesis potente, pero con QED bajo, alerta hERG y alta similitud con dacomitinib. \\
+
+        C06 & Mejor perfil ADMET general & Perfil prudente: cumple todos los filtros ADMET duros y mantiene actividad favorable. \\
+
+        C23 & Mayor novedad & Molécula exploratoria, muy alejada de inhibidores EGFR aprobados, con mayor incertidumbre externa. \\
+
+        C26 & Mejor calidad tipo fármaco & QED muy alto, pero penalizada por hERG y AMES. \\
+        \hline
+    \end{tabular}
+    \caption{Candidatas representativas de distintos perfiles dentro del conjunto final de candidatas. ADMET corresponde a la fracción de filtros ADMET duros superados.}
+    \label{tab:perfiles_candidatas_resultados}
+\end{table}
+
+La Figura~\ref{fig:perfiles_moleculares} muestra la representación molecular de estos perfiles. La visualización confirma que no se trata simplemente de variantes triviales de una misma molécula, sino de estructuras con diferencias apreciables en núcleos y sustituyentes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{resultados_figuras/fig_perfiles_moleculares.png}
+    \caption{Representación molecular de las candidatas seleccionadas como perfiles interpretativos: C05 como perfil equilibrado, C07 como alta actividad predicha, C06 como mejor perfil ADMET general, C23 como mayor novedad y C26 como mejor calidad tipo fármaco.}
+    \label{fig:perfiles_moleculares}
+\end{figure}
+
+La candidata C05 representa el mejor compromiso global entre actividad, puntuación global \texttt{reward\_score}, QED y hERG favorable, aunque no está completamente libre de alertas, ya que presenta fallo en NIH. C07 es la molécula con mayor actividad predicha, pero concentra varias señales de riesgo: no supera hERG, presenta QED bajo, tiene una violación de Lipinski y muestra alta similitud con dacomitinib. Por tanto, C07 debe describirse como una hipótesis de alta actividad pero alto riesgo, no como la mejor candidata global.
+
+C06 es la candidata más limpia desde el punto de vista ADMET general, ya que supera todos los filtros duros considerados, incluido hERG. Aunque su actividad predicha no es la máxima, su perfil equilibrado la convierte en una de las moléculas más defendibles para priorización conservadora. C23 destaca por novedad frente a inhibidores EGFR aprobados y por QED alto, pero su actividad es más moderada y su distancia estructural aumenta la incertidumbre del modelo. Finalmente, C26 presenta el QED más alto, pero falla hERG y AMES, por lo que no puede considerarse una candidata segura pese a su buena calidad tipo fármaco.
+
+\section{Riesgos detectados en el conjunto final de candidatas}
+
+Para evitar una interpretación excesivamente optimista, se construyeron indicadores de riesgo sobre el conjunto final de candidatas. Se consideraron señales como fallos ADMET generales, fallo hERG, alta similitud frente al conjunto de entrenamiento, QED bajo y exceso de violaciones de Lipinski.
+
+La Tabla~\ref{tab:riesgos_shortlist_resultados} resume los resultados. De las 30 candidatas, 21 presentan al menos una señal de riesgo y 9 no presentan señales críticas bajo los criterios definidos. El riesgo más frecuente es hERG, presente en 18 candidatas. Además, 9 candidatas presentan algún fallo ADMET general excluyendo hERG.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{p{8cm} c}
+        \hline
+        \textbf{Indicador} & \textbf{Número de candidatas} \\
+        \hline
+        Candidatas con al menos una señal de riesgo & 21 \\
+        Candidatas sin señales de riesgo bajo los criterios definidos & 9 \\
+        Candidatas que no superan hERG & 18 \\
+        Candidatas con fallos ADMET generales excluyendo hERG & 9 \\
+        \hline
+    \end{tabular}
+    \caption{Resumen de señales de riesgo detectadas en el conjunto final de candidatas.}
+    \label{tab:riesgos_shortlist_resultados}
+\end{table}
+
 
 \chapter{Conclusiones y trabajos futuros}
 
