@@ -2,21 +2,22 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Estructura modular de los notebooks empleados en el desarrollo de la pipeline.}}{32}{}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Hiperpar\IeC {\'a}metros utilizados durante el fine-tuning y la generaci\IeC {\'o}n final.}}{35}{}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Filtros fisicoqu\IeC {\'\i }micos b\IeC {\'a}sicos aplicados a las mol\IeC {\'e}culas generadas.}}{37}{}%
-\contentsline {table}{\numberline {3.4}{\ignorespaces Rendimiento del modelo QSAR de pIC50 basado en Random Forest y fingerprints Morgan.}}{38}{}%
-\contentsline {table}{\numberline {3.5}{\ignorespaces Reglas ADMET duras aplicadas durante el scoring.}}{39}{}%
-\contentsline {table}{\numberline {3.6}{\ignorespaces Pesos utilizados para el c\IeC {\'a}lculo de \texttt {reward\_score}.}}{41}{}%
-\contentsline {table}{\numberline {3.7}{\ignorespaces Reducci\IeC {\'o}n progresiva del conjunto molecular durante la pipeline.}}{43}{}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Estructura modular de los notebooks empleados en el desarrollo de la pipeline.}}{33}{}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Hiperpar\IeC {\'a}metros utilizados durante el fine-tuning y la generaci\IeC {\'o}n final.}}{36}{}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Filtros fisicoqu\IeC {\'\i }micos b\IeC {\'a}sicos aplicados a las mol\IeC {\'e}culas generadas.}}{38}{}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Rendimiento del modelo QSAR de pIC50 basado en Random Forest y fingerprints Morgan.}}{39}{}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Reglas ADMET duras aplicadas durante el scoring.}}{40}{}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Pesos utilizados para el c\IeC {\'a}lculo de \texttt {reward\_score}.}}{42}{}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Reducci\IeC {\'o}n progresiva del conjunto molecular durante la pipeline.}}{44}{}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Resumen cuantitativo de la reducci\IeC {\'o}n progresiva del conjunto molecular durante el flujo computacional.}}{45}{}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Resumen descriptivo de las mol\IeC {\'e}culas que superaron el filtro fisicoqu\IeC {\'\i }mico b\IeC {\'a}sico.}}{48}{}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces Rendimiento del modelo QSAR de regresi\IeC {\'o}n para la estimaci\IeC {\'o}n de pIC$_{50}$ frente a EGFR.}}{48}{}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces Resumen descriptivo de las principales m\IeC {\'e}tricas del conjunto final de candidatas.}}{51}{}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces Cumplimiento de criterios ADMET duros en el conjunto final de candidatas.}}{54}{}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces Candidatas representativas de distintos perfiles dentro del conjunto final de candidatas. ADMET corresponde a la fracci\IeC {\'o}n de filtros ADMET duros superados.}}{57}{}%
-\contentsline {table}{\numberline {4.7}{\ignorespaces Resumen de se\IeC {\~n}ales de riesgo detectadas en el conjunto final de candidatas.}}{58}{}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Resumen cuantitativo de la reducci\IeC {\'o}n progresiva del conjunto molecular durante el flujo computacional.}}{46}{}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Resumen descriptivo de las mol\IeC {\'e}culas que superaron el filtro fisicoqu\IeC {\'\i }mico b\IeC {\'a}sico.}}{49}{}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Rendimiento del modelo QSAR de regresi\IeC {\'o}n para la estimaci\IeC {\'o}n de pIC$_{50}$ frente a EGFR.}}{49}{}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Resumen descriptivo de las principales m\IeC {\'e}tricas del conjunto final de candidatas.}}{52}{}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Cumplimiento de criterios ADMET duros en el conjunto final de candidatas.}}{55}{}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Candidatas representativas de distintos perfiles dentro del conjunto final de candidatas. ADMET corresponde a la fracci\IeC {\'o}n de filtros ADMET duros superados.}}{58}{}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Resumen de se\IeC {\~n}ales de riesgo detectadas en el conjunto final de candidatas.}}{59}{}%
+\addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

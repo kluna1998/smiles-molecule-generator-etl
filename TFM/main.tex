@@ -1,10 +1,10 @@
 \documentclass[IB]{TFUOC}%IB: CASTELLANO, CAT: CATALÁN, ENG: ANGLÈS
 
 %Introducción de datos del trabajo
-\title{Diseño de una pipeline de optimización multiobjetivo basada en modelos generativos preentrenados para la generación de moléculas drug-like con afinidad proxy frente a EGFR}
+\title{Generación de moléculas drug-like mediante IA generativa para EGFR}
 \titcrt{IA generativa en EGFR} %Título corto que aparecerá a la cabecera
 \author{Kevin Luna Obando}
-\date{2 de marzo de 2026}
+\date{25 de mayo de 2026}
 
 
 \nomPDC{Cibrán López Álvarez}
@@ -31,28 +31,29 @@
 % Resumen en el idioma
 
 \abstractidioma{
-El descubrimiento de fármacos es un proceso complejo en el que no basta con que una molécula sea activa frente a una diana terapéutica. También debe presentar buenas propiedades farmacocinéticas y ser razonablemente viable desde el punto de vista sintético. En la práctica, esto lo convierte en un problema multiobjetivo, donde hay que equilibrar varios criterios al mismo tiempo.
+El descubrimiento temprano de fármacos puede entenderse como un problema de priorización dentro de un espacio químico muy amplio. En este contexto, los modelos generativos permiten proponer nuevas estructuras moleculares, pero la generación de moléculas válidas no garantiza por sí sola que estas presenten actividad biológica, propiedades farmacocinéticas adecuadas o una calidad molecular compatible con el desarrollo farmacéutico.
 
-En los últimos años, los modelos generativos moleculares preentrenados han demostrado ser herramientas muy útiles para explorar grandes regiones del espacio químico sin necesidad de entrenar modelos desde cero. Sin embargo, generar muchas estructuras no garantiza que estas cumplan con los requisitos necesarios para convertirse en buenos candidatos a fármaco. Por ello, resulta fundamental incorporar mecanismos de evaluación y selección que permitan priorizar compuestos con un perfil equilibrado.
+Este Trabajo Final de Máster presenta una pipeline computacional para la generación, evaluación y priorización de moléculas tipo fármaco en el contexto de EGFR. El flujo desarrollado combina un modelo generativo molecular preentrenado, ajustado mediante \textit{fine-tuning} sobre moléculas activas frente a EGFR, con una etapa posterior de evaluación basada en criterios fisicoquímicos, predicción de actividad, propiedades ADMET y similitud estructural.
 
-Este Trabajo Final de Máster propone el diseño e implementación de una pipeline computacional que combina generación molecular y evaluación multiobjetivo. En primer lugar, un modelo generativo preentrenado produce nuevas moléculas de manera no condicionada explícitamente por múltiples objetivos. A continuación, cada compuesto es evaluado según distintos criterios relevantes.
+La actividad frente a EGFR se estima mediante un modelo QSAR entrenado a partir de datos experimentales de ChEMBL, utilizando la pIC$_{50}$ como señal \textit{proxy} de actividad biológica. De forma complementaria, las propiedades farmacocinéticas y toxicológicas se evalúan mediante ADMET-AI, y la calidad molecular se caracteriza mediante descriptores calculados con RDKit, como QED, reglas de Lipinski y similitud de Tanimoto.
 
-La afinidad frente al receptor EGFR se estima mediante un modelo QSAR preentrenado, que actúa como aproximación a la actividad biológica. Además, las propiedades ADMET se incorporan como filtros utilizando la herramienta Admet-AI, lo que permite descartar moléculas con perfiles farmacocinéticos desfavorables.
+La selección final de candidatas se realiza mediante un enfoque de optimización multiobjetivo basado en dominancia de Pareto. Este procedimiento permite identificar moléculas que representan distintos compromisos entre actividad predicha, perfil ADMET, calidad molecular, novedad estructural y dominio de aplicabilidad del modelo predictivo.
 
-Finalmente, la selección de candidatos se realiza mediante un enfoque basado en dominancia de Pareto, identificando aquellas moléculas que presentan el mejor equilibrio entre afinidad estimada y propiedades ADMET adecuadas. El objetivo del trabajo no es la validación experimental de compuestos concretos, sino el desarrollo y análisis de una arquitectura de inteligencia artificial reproducible que estructure la generación y selección molecular bajo criterios multiobjetivo claros, evaluando tanto el comportamiento del frente de Pareto como la diversidad del espacio químico generado.
+El objetivo del trabajo no es validar experimentalmente nuevos inhibidores de EGFR, sino demostrar la utilidad de una arquitectura reproducible para transformar una muestra generativa amplia en una cartera reducida de hipótesis moleculares priorizadas. Los resultados muestran que la estrategia propuesta permite filtrar, ordenar e interpretar las moléculas generadas bajo criterios explícitos, destacando tanto las oportunidades como las limitaciones de utilizar modelos computacionales en fases tempranas de diseño molecular asistido por inteligencia artificial.
+
 }
 
 % Resumen en inglés.
 \abstractenglish{
-Drug discovery is a complex process in which it is not enough for a molecule to be active against a therapeutic target. It must also exhibit suitable pharmacokinetic properties and be reasonably feasible from a synthetic standpoint. In practice, this makes drug discovery a multi-objective problem, where several criteria need to be balanced at the same time.
+Early-stage drug discovery can be formulated as a prioritization problem within a very large chemical space. In this context, generative models can propose new molecular structures, but generating valid molecules does not guarantee biological activity, suitable pharmacokinetic properties or molecular quality compatible with pharmaceutical development.
 
-In recent years, pretrained molecular generative models have emerged as powerful tools for exploring large regions of chemical space without the need to train models from scratch. However, simply generating a large number of molecular structures does not guarantee that they meet the requirements to become promising drug candidates. Therefore, it is essential to incorporate evaluation and selection mechanisms that prioritize compounds with a balanced pharmacological profile.
+This Master's Thesis presents a computational pipeline for the generation, evaluation and prioritization of drug-like molecules in the context of EGFR. The proposed workflow combines a pretrained molecular generative model, fine-tuned on EGFR-active molecules, with a post-generation evaluation stage based on physicochemical criteria, activity prediction, ADMET properties and structural similarity.
 
-This Master’s Thesis proposes the design and implementation of a computational pipeline that combines molecular generation with multi-objective evaluation. First, a pretrained generative model produces novel molecules without being explicitly conditioned on multiple objectives. Each generated compound is then assessed according to several relevant criteria.
+EGFR activity is estimated using a QSAR model trained on experimental data from ChEMBL, with predicted pIC$_{50}$ used as a proxy for biological activity. In addition, pharmacokinetic and toxicological properties are assessed with ADMET-AI, while molecular quality is characterized through RDKit descriptors, including QED, Lipinski rules and Tanimoto similarity.
 
-Binding affinity toward EGFR is estimated using a pretrained QSAR model, which serves as a proxy for biological activity. In addition, ADMET properties are incorporated as filtering criteria through the Admet-AI tool, allowing the removal of molecules with unfavorable pharmacokinetic profiles.
+The final candidate selection is performed using a multi-objective optimization approach based on Pareto dominance. This procedure identifies molecules that represent different trade-offs between predicted activity, ADMET profile, molecular quality, structural novelty and the applicability domain of the predictive model.
 
-Finally, candidate selection is performed using a Pareto dominance–based approach, identifying molecules that achieve the best trade-offs between predicted affinity and suitable ADMET properties. The goal of this work is not the experimental validation of specific compounds, but the development and analysis of a reproducible artificial intelligence framework that structures molecular generation and selection under clear multi-objective principles, evaluating both the resulting Pareto front and the diversity of the generated chemical space.
+The aim of this work is not to experimentally validate new EGFR inhibitors, but to demonstrate the usefulness of a reproducible architecture for transforming a broad generative sample into a reduced set of prioritized molecular hypotheses. The results show that the proposed strategy can filter, rank and interpret generated molecules under explicit criteria, highlighting both the opportunities and limitations of using computational models in early-stage AI-assisted molecular design.
 }
 
 \usepackage{float}
@@ -73,76 +74,29 @@ Finally, candidate selection is performed using a Pareto dominance–based appro
 
 \section{Contexto y justificación}
 
-El descubrimiento de nuevos compuestos terapéuticos puede formularse, en sus etapas iniciales,
-como un problema de exploración y priorización dentro de un espacio químico de dimensión
-extremadamente elevada. La cantidad de moléculas potencialmente \textit{drug-like} es tan amplia
-que resulta imposible recorrerla de forma exhaustiva, lo que convierte la priorización eficiente
-en un componente central del proceso de investigación. En este contexto, la inteligencia artificial
-se ha consolidado como una herramienta clave para explorar regiones relevantes del espacio químico
-y proponer estructuras con propiedades compatibles con desarrollo farmacéutico [1].
+El descubrimiento de nuevos compuestos terapéuticos puede formularse, en sus etapas iniciales, como un problema de exploración y priorización dentro de un espacio químico extremadamente amplio. La cantidad de moléculas potencialmente \textit{drug-like} es tan elevada que resulta inviable evaluarlas de forma exhaustiva mediante métodos experimentales. Por ello, las herramientas computacionales y los modelos de inteligencia artificial se han convertido en recursos relevantes para explorar regiones del espacio químico y priorizar estructuras con propiedades compatibles con el desarrollo farmacéutico [1].
 
-Los modelos generativos moleculares preentrenados han emergido como una alternativa flexible
-para la generación de nuevas estructuras químicas. Estos modelos, entrenados previamente sobre
-grandes colecciones moleculares, permiten reutilizar representaciones aprendidas sin necesidad de
-entrenar sistemas desde cero para cada caso de uso específico. Evidencia reciente sugiere que los
-modelos preentrenados pueden capturar representaciones moleculares más informativas y
-generalizables en tareas de descubrimiento asistido por inteligencia artificial [2]. No obstante,
-la mera generación de moléculas químicamente válidas no garantiza un perfil equilibrado de
-propiedades farmacológicas.
+En este contexto, los modelos generativos moleculares permiten proponer nuevas estructuras químicas a partir de patrones aprendidos en grandes colecciones de moléculas. El uso de modelos preentrenados resulta especialmente atractivo, ya que permite reutilizar conocimiento químico previamente aprendido sin necesidad de entrenar un generador desde cero para cada problema específico [2]. Sin embargo, generar moléculas químicamente válidas no garantiza que estas presenten actividad biológica, propiedades farmacocinéticas adecuadas, baja toxicidad o una calidad molecular suficiente para ser consideradas hipótesis prometedoras.
 
-El diseño molecular con fines terapéuticos constituye un problema intrínsecamente multiobjetivo.
-La optimización exclusiva de afinidad frente a una diana puede conducir a compuestos con perfiles
-ADMET desfavorables o baja viabilidad sintética. De forma análoga, priorizar únicamente propiedades
-de \textit{drug-likeness} puede comprometer la señal de actividad biológica. La literatura reciente
-subraya la necesidad de emplear marcos formales de optimización multiobjetivo en el diseño
-\textit{de novo} de fármacos, permitiendo analizar de manera explícita los compromisos entre
-objetivos potencialmente conflictivos [4].
+El diseño molecular con fines terapéuticos es, por naturaleza, un problema multiobjetivo. Una molécula candidata no puede evaluarse únicamente por su posible afinidad frente a una diana, ya que una alta actividad estimada puede ir acompañada de perfiles ADMET desfavorables, baja calidad fisicoquímica o escasa viabilidad posterior. De forma análoga, priorizar únicamente propiedades de \textit{drug-likeness} puede llevar a estructuras químicamente razonables pero poco relevantes frente a la diana terapéutica. Por tanto, resulta necesario incorporar estrategias que permitan analizar compromisos entre actividad estimada, calidad molecular, propiedades farmacocinéticas, toxicidad y novedad estructural [4].
 
-En este Trabajo Final de Máster se propone el diseño y evaluación de una \textbf{pipeline
-computacional} que integra un modelo generativo molecular preentrenado con un esquema formal
-de optimización multiobjetivo basado en dominancia de Pareto. El caso de estudio se centra en el
-\textit{Epidermal Growth Factor Receptor} (EGFR), una diana terapéutica ampliamente estudiada
-en oncología y objeto de investigaciones recientes apoyadas en aprendizaje automático [5].
+El presente Trabajo Final de Máster se centra en EGFR (\textit{Epidermal Growth Factor Receptor}), una diana terapéutica ampliamente estudiada en oncología y especialmente relevante en el contexto de tumores como el cáncer de pulmón de células no pequeñas. La existencia de inhibidores conocidos, datos experimentales de bioactividad y problemas clínicos asociados a resistencia farmacológica convierten a EGFR en un caso de estudio adecuado para evaluar una pipeline de generación y priorización molecular asistida por inteligencia artificial [5].
 
-A diferencia de enfoques estructurales basados en \textit{docking} molecular, este trabajo adopta
-una perspectiva centrada en inteligencia artificial aplicada y modelado predictivo. La afinidad
-se aproxima mediante un modelo QSAR específico para EGFR previamente entrenado, que actúa
-como \textit{proxy} principal de actividad biológica. Este planteamiento permite reducir el
-coste computacional y centrar el análisis en la evaluación cuantitativa de estrategias de
-optimización.
+A diferencia de enfoques estructurales basados en \textit{docking} molecular o simulaciones de dinámica molecular, este trabajo adopta una perspectiva centrada en ciencia de datos e inteligencia artificial aplicada. La actividad frente a EGFR se estima mediante un modelo QSAR entrenado a partir de datos experimentales de ChEMBL, utilizando la pIC$_{50}$ predicha como señal \textit{proxy} de actividad biológica. Esta aproximación no sustituye a la validación experimental ni a la evaluación estructural, pero permite realizar una priorización computacional eficiente sobre un conjunto amplio de moléculas generadas.
 
-Adicionalmente, la pipeline incorpora predicciones ADMET mediante la plataforma ADMET-AI [3],
-utilizadas como restricciones para descartar compuestos con perfiles farmacocinéticos o de
-seguridad desfavorables. Asimismo, se calculan métricas estándar como el índice QED y el
-\textit{Synthetic Accessibility Score} (SA score) para caracterizar \textit{drug-likeness} y
-sintetizabilidad.
+La pipeline propuesta combina generación molecular, validación química, cálculo de descriptores fisicoquímicos, predicción de actividad, evaluación ADMET mediante ADMET-AI [3], análisis de similitud estructural y selección multiobjetivo basada en dominancia de Pareto. El modelo generativo empleado no es condicional, por lo que la optimización no ocurre durante la generación de moléculas, sino en una fase posterior de scoring, filtrado y selección. Esta decisión metodológica permite construir un flujo modular, reproducible y auditable, donde cada etapa contribuye de forma explícita a reducir el espacio inicial de moléculas hasta obtener una shortlist final de hipótesis priorizadas.
 
-De forma complementaria, se podrá analizar la similaridad estructural respecto a inhibidores
-conocidos de EGFR mediante fingerprints moleculares tipo Morgan (ECFP) y el coeficiente de
-Tanimoto, con el objetivo de estudiar si la optimización desplaza el muestreo hacia regiones
-químicamente próximas a compuestos activos. Esta métrica se emplea exclusivamente con fines
-descriptivos y de análisis del espacio químico, sin intervenir directamente en la función
-objetivo.
-
-El objetivo de este trabajo no es descubrir ni validar nuevos medicamentos en el laboratorio, 
-sino analizar si incorporar una estrategia formal de optimización a modelos de inteligencia 
-artificial generativa mejora realmente la calidad de las moléculas que estos producen. Para ello, 
-se compara un modelo que simplemente genera moléculas con otro que, además, intenta equilibrar 
-varios criterios al mismo tiempo, como su posible eficacia estimada, que tengan características 
-adecuadas para convertirse en fármacos y que sean viables en la práctica. Mediante métricas 
-cuantitativas, se evalúa si esta optimización logra un mejor equilibrio, mayor diversidad y 
-mayor novedad en las propuestas, aportando así evidencia metodológica sobre el impacto real de 
-la optimización en el diseño molecular asistido por inteligencia artificial.
+El objetivo del trabajo no es descubrir ni validar experimentalmente nuevos inhibidores de EGFR, sino diseñar y evaluar una arquitectura computacional capaz de transformar una muestra generativa amplia en un conjunto reducido de moléculas priorizadas bajo criterios explícitos. Por tanto, las moléculas seleccionadas deben interpretarse como hipótesis computacionales para análisis posteriores, no como candidatos farmacológicos validados. Esta distinción es esencial para situar correctamente el alcance del proyecto y evitar una sobreinterpretación de los resultados obtenidos mediante modelos predictivos.
 
 \section{Objetivos}
 
-El presente trabajo tiene como finalidad principal el diseño, implementación y evaluación de una pipeline computacional para la generación de moléculas drug-like mediante modelos generativos preentrenados, integrando un esquema formal de optimización multiobjetivo. A través de este enfoque, se busca demostrar la viabilidad de estructurar el diseño molecular asistido por inteligencia artificial bajo criterios explícitos de selección y evaluación, permitiendo analizar de forma cuantitativa los compromisos entre actividad biológica estimada, propiedades farmacocinéticas y viabilidad sintética.
+El presente trabajo tiene como finalidad diseñar, implementar y evaluar una \textit{pipeline} computacional para la generación, evaluación y priorización de moléculas \textit{drug-like} en el contexto de EGFR. La propuesta combina un modelo generativo molecular preentrenado con una fase posterior de \textit{scoring}, filtrado y selección multiobjetivo, integrando criterios de actividad \textit{proxy}, propiedades ADMET, calidad molecular, novedad estructural y similitud estructural con el conjunto de entrenamiento.
 
-El trabajo se centra en la generación de moléculas con señal proxy de afinidad frente al receptor EGFR, incorporando restricciones ADMET y un procedimiento de selección basado en dominancia de Pareto, con el objetivo de evaluar si la optimización multiobjetivo mejora el perfil global de los candidatos generados respecto a un muestreo generativo no condicionado.
+El trabajo se centra en una etapa temprana de priorización computacional. Por tanto, las moléculas seleccionadas no se interpretan como inhibidores validados de EGFR, sino como hipótesis moleculares priorizadas para análisis posteriores. En este sentido, el objetivo principal no es demostrar eficacia farmacológica, sino comprobar si una arquitectura modular y reproducible permite transformar una muestra generativa amplia en un conjunto final reducido de moléculas evaluadas bajo criterios explícitos.
 
 \subsection{Objetivo principal}
 
-Diseñar e implementar una pipeline computacional basada en modelos generativos moleculares preentrenados e integrada con un esquema formal de optimización multiobjetivo que permita generar moléculas drug-like con señales proxy de afinidad frente a EGFR, evaluando cuantitativamente la mejora en el equilibrio entre actividad estimada, propiedades farmacocinéticas y viabilidad sintética respecto a un enfoque generativo no optimizado.
+Diseñar e implementar una \textit{pipeline} de inteligencia artificial generativa para la generación y priorización multiobjetivo de moléculas \textit{drug-like} frente a EGFR, utilizando actividad QSAR como señal \textit{proxy}, predicciones ADMET y métricas de calidad molecular para seleccionar un conjunto reducido de hipótesis computacionales con perfiles equilibrados.
 
 \subsection{Objetivos específicos}
 
@@ -150,68 +104,76 @@ Para alcanzar el objetivo principal, se plantean los siguientes objetivos espec�
 
 \begin{itemize}
 
-    \item Implementar un modelo generativo molecular preentrenado para la generación de estructuras químicas válidas representadas en formato SMILES.
+    \item Construir un conjunto de datos de bioactividad frente a EGFR a partir de registros experimentales de ChEMBL, aplicando criterios de limpieza, normalización, canonicalización de SMILES y agregación molecular.
 
-    \item Integrar un modelo QSAR específico para EGFR como función de evaluación de afinidad \textit{proxy}, permitiendo estimar la posible actividad biológica de las moléculas generadas.
+    \item Ajustar un modelo generativo molecular preentrenado para generar estructuras químicas representadas como SMILES en un espacio químico relacionado con moléculas activas frente a EGFR.
 
-    \item Incorporar predicciones de propiedades ADMET mediante la herramienta Admet-AI, estableciendo umbrales que actúen como restricciones farmacocinéticas mínimas.
+    \item Evaluar la calidad de las moléculas generadas mediante métricas de validez química, unicidad y novedad respecto al conjunto empleado durante el ajuste del modelo generativo.
 
-    \item Calcular métricas de calidad molecular como el índice de \textit{drug-likeness} (QED) y el índice de sintetizabilidad (SA score).
+    \item Entrenar y evaluar un modelo QSAR de regresión para estimar pIC$_{50}$ frente a EGFR, utilizando esta predicción como señal \textit{proxy} de actividad biológica.
 
-    \item Formalizar el problema como un proceso de optimización multiobjetivo considerando tres criterios principales: maximización de la afinidad \textit{proxy} frente a EGFR, maximización del QED y minimización del SA score.
+    \item Evaluar propiedades farmacocinéticas y toxicológicas de las moléculas generadas mediante ADMET-AI, con el fin de incorporar esta información al proceso de priorización.
 
-    \item Implementar un procedimiento de selección basado en dominancia de Pareto para identificar moléculas que representen un equilibrio adecuado entre los objetivos definidos.
+    \item Calcular descriptores fisicoquímicos y métricas de calidad molecular, incluyendo QED, cumplimiento de reglas tipo Lipinski, similitud de Tanimoto y scaffolds de Murcko.
 
-    \item Evaluar el rendimiento del enfoque propuesto mediante métricas cuantitativas de optimización multiobjetivo, incluyendo el análisis del frente de Pareto y el cálculo del hipervolumen, así como indicadores de validez, diversidad y novedad estructural.
+    \item Establecer criterios de priorización que combinen actividad predicha, calidad molecular, perfil ADMET, novedad estructural y similitud respecto al conjunto de entrenamiento.
 
-    \item Comparar los resultados obtenidos con un baseline de muestreo generativo no optimizado, analizando las diferencias en la distribución de propiedades y en la cobertura del espacio químico.
+    \item Aplicar una estrategia de selección multiobjetivo basada en dominancia de Pareto para identificar moléculas que representen distintos compromisos entre actividad estimada, perfil ADMET, calidad molecular y similitud estructural.
+
+    \item Analizar el conjunto final de moléculas seleccionadas desde una perspectiva crítica, considerando su actividad predicha, perfil ADMET, novedad frente a inhibidores EGFR de referencia y diversidad estructural.
 
 \end{itemize}
+
+
+
 
 \section{Impacto en sostenibilidad y ético-social}
 \label{s:etic}
 
-El presente trabajo se enmarca dentro del ámbito del descubrimiento computacional de fármacos mediante inteligencia artificial, lo que implica una serie de impactos potenciales en las dimensiones de sostenibilidad, ética y diversidad.
+El presente trabajo se enmarca en el ámbito del descubrimiento computacional de fármacos mediante inteligencia artificial, por lo que presenta implicaciones en términos de sostenibilidad, responsabilidad científica, ética y diversidad. Aunque el objetivo del proyecto es metodológico y no experimental, el uso de modelos predictivos para priorizar moléculas requiere considerar tanto sus beneficios potenciales como sus limitaciones.
 
 \subsection*{Impacto en sostenibilidad}
 
-Desde el punto de vista de la sostenibilidad, el uso de herramientas computacionales para el diseño molecular contribuye a reducir la necesidad de experimentación temprana en laboratorio, lo que puede disminuir el consumo de recursos materiales y energéticos asociados a procesos de síntesis y cribado experimental masivo. La implementación de pipelines de inteligencia artificial en fases iniciales del \textit{drug discovery} permite priorizar compuestos más prometedores, optimizando recursos y reduciendo costes.
+Desde el punto de vista de la sostenibilidad, el uso de herramientas computacionales en fases tempranas del diseño molecular puede contribuir a reducir la necesidad de cribados experimentales masivos. Un flujo computacional capaz de filtrar y priorizar moléculas antes de una posible síntesis permite concentrar recursos en un número menor de compuestos, disminuyendo potencialmente el consumo de reactivos, materiales, tiempo de laboratorio y energía asociados a etapas iniciales de experimentación.
 
-No obstante, también debe considerarse el impacto energético asociado al uso de modelos de inteligencia artificial y procesamiento computacional. Aunque en este trabajo se emplean modelos preentrenados y no se realiza entrenamiento desde cero, es importante reconocer que el desarrollo y uso de sistemas de IA conlleva un consumo energético que forma parte del debate actual sobre sostenibilidad digital.
+En este trabajo, la sostenibilidad también se aborda desde la propia estrategia computacional. Se emplean modelos y herramientas ya disponibles, evitando entrenar todos los componentes desde cero. Esta decisión reduce el coste computacional del proyecto y permite centrar los recursos en la integración, evaluación y análisis de resultados. Además, la estructura modular del flujo facilita la reutilización de componentes y la repetición controlada de experimentos, evitando ejecuciones innecesarias.
 
 \subsection*{Impacto ético-social}
 
-La aplicación de inteligencia artificial al descubrimiento de fármacos tiene un claro potencial transformador, ya que puede acelerar la identificación de moléculas prometedoras y optimizar la fase de priorización. No obstante, es importante subrayar que los modelos utilizados en este trabajo son aproximaciones estadísticas basadas en datos previos.
+Desde una perspectiva ética, el principal riesgo del trabajo es la sobreinterpretación de los resultados. Las moléculas generadas y seleccionadas no constituyen fármacos ni inhibidores validados de EGFR, sino hipótesis computacionales priorizadas mediante modelos predictivos. La actividad frente a EGFR se estima mediante un modelo QSAR, y las propiedades ADMET proceden de predicciones computacionales. Por tanto, estos resultados deben entenderse como apoyo a la decisión en fases tempranas, no como evidencia definitiva de eficacia o seguridad.
 
-Desde una perspectiva ética, los resultados obtenidos deben interpretarse como herramientas de apoyo a la decisión y no como evidencia definitiva de actividad o seguridad. La responsabilidad científica implica comunicar con claridad las limitaciones de estos modelos, su dominio de aplicabilidad y los posibles sesgos derivados de los datos con los que fueron entrenados.
+Esta distinción es especialmente importante en el contexto biomédico, donde una comunicación imprecisa podría generar expectativas injustificadas sobre la validez farmacológica de las moléculas propuestas. Por ello, el trabajo delimita explícitamente su alcance: no se realiza validación experimental, no se demuestra actividad biológica real y no se confirma seguridad toxicológica. La responsabilidad científica exige presentar las moléculas seleccionadas como candidatas a análisis posterior, no como soluciones terapéuticas.
 
 \section{Enfoque y método seguido}
 
-Existen diferentes estrategias para abordar un proyecto en el ámbito del descubrimiento computacional de fármacos. Entre ellas destacan: el desarrollo de un modelo predictivo desde cero, la adaptación y comparación de múltiples modelos existentes, o el diseño de una arquitectura que integre herramientas preexistentes dentro de una pipeline estructurada.
+Existen distintas estrategias para abordar un proyecto de descubrimiento molecular asistido por inteligencia artificial. Una posibilidad sería desarrollar un nuevo modelo generativo desde cero; otra, construir un modelo predictivo específico y centrar el trabajo en su rendimiento; una tercera opción consiste en integrar herramientas ya disponibles dentro de un flujo computacional reproducible que permita generar, evaluar y priorizar moléculas bajo criterios explícitos.
 
-En este trabajo se ha optado por la estrategia de diseñar y construir una pipeline computacional que integra modelos preentrenados ya disponibles (modelo generativo molecular, modelo QSAR específico para EGFR y herramienta de predicción ADMET) bajo un marco formal de optimización multiobjetivo.
+En este trabajo se ha optado por esta tercera estrategia. La finalidad principal no es proponer un nuevo algoritmo generativo ni desarrollar un nuevo método QSAR, sino diseñar una arquitectura modular que combine generación molecular, predicción de actividad, evaluación ADMET y selección multiobjetivo. 
 
-Esta decisión responde a varios motivos. En primer lugar, el objetivo principal no es desarrollar un nuevo modelo de aprendizaje automático, sino analizar cómo diferentes modelos pueden combinarse de forma coherente dentro de un sistema de toma de decisiones estructurado. En segundo lugar, el uso de modelos preentrenados permite centrar el trabajo en la arquitectura, la integración y la optimización multiobjetivo, aspectos alineados con el enfoque en inteligencia artificial aplicada e ingeniería de datos.
+El enfoque seguido se basa en una aproximación incremental. En primer lugar, se construye un conjunto de datos de bioactividad frente a EGFR a partir de registros experimentales de ChEMBL. Posteriormente, se ajusta un modelo generativo molecular preentrenado para desplazar su distribución hacia un espacio químico relacionado con moléculas activas frente a EGFR. A continuación, las moléculas generadas se evalúan mediante descriptores fisicoquímicos, un modelo QSAR de actividad, predicciones ADMET, métricas de calidad molecular y análisis de similitud estructural.
 
-El método seguido se basa en una aproximación incremental:
+Una decisión metodológica importante es que el modelo generativo empleado no es condicional. Por tanto, la optimización no se realiza durante la generación de moléculas, sino en una fase posterior de evaluación, filtrado y selección. Este planteamiento permite separar claramente la generación molecular de la priorización posterior, haciendo que cada etapa del flujo sea más fácil de auditar, modificar y reproducir.
+
+El método seguido puede resumirse en las siguientes etapas:
 
 \begin{itemize}
+    \item Preparación del conjunto de datos de bioactividad frente a EGFR.
     \item Generación de moléculas mediante un modelo generativo preentrenado.
-    \item Evaluación de propiedades (afinidad \textit{proxy}, ADMET, QED y SA score).
-    \item Filtrado mediante restricciones ADMET.
-    \item Aplicación de dominancia de Pareto para identificar soluciones de compromiso.
-    \item Análisis del conjunto resultante desde una perspectiva de diversidad y distribución de propiedades.
+    \item Evaluación de actividad \textit{proxy}, propiedades ADMET, calidad molecular y similitud estructural.
+    \item Filtrado y priorización según criterios de actividad, seguridad, calidad química y novedad.
+    \item Selección multiobjetivo mediante dominancia de Pareto.
+    \item Análisis del conjunto final desde una perspectiva de actividad, riesgo, novedad y diversidad.
 \end{itemize}
 
-Esta estrategia resulta apropiada para alcanzar los objetivos planteados, ya que permite formalizar el problema como un sistema multiobjetivo reproducible, centrándose en la integración metodológica y en la evaluación estructurada de resultados dentro del marco del \textit{drug discovery} asistido por inteligencia artificial.
+
 
 \section{Planificación del trabajo}
 
-El trabajo se ha dividido en cuatro fases principales: definición y planificación, estado del arte, diseño e implementación de la \textit{pipeline}, y finalmente evaluación de resultados y redacción de la memoria. Cada una de estas fases se corresponde con los módulos del curso (M1–M4) y culmina con la entrega de un entregable parcial.
+El trabajo se ha organizado en cuatro fases principales: definición y planificación, revisión del estado del arte, diseño e implementación del flujo computacional, y evaluación de resultados junto con la redacción final de la memoria. Estas fases se corresponden con los módulos del curso (M1--M4) y culminan con la entrega de los productos parciales correspondientes.
 
-En la planificación no se ha tenido en cuenta la defensa, ya que el trabajo estará finalizado y la fecha no puede conocerse hasta después de la entrega de la memoria.
+La defensa no se incluye dentro de esta planificación, ya que se realiza una vez entregada la memoria final y su fecha concreta no se conoce durante el desarrollo del trabajo.
 
-La Figura \ref{fig:gantt} muestra el diagrama de Gantt del proyecto, en el que se representa la planificación temporal de las tareas, así como la duración estimada de cada fase.
+La Figura~\ref{fig:gantt} muestra el diagrama de Gantt del proyecto, donde se representa la planificación temporal de las tareas y la duración estimada de cada fase.
 
 \begin{figure}[ht]
     \centering
@@ -220,52 +182,84 @@ La Figura \ref{fig:gantt} muestra el diagrama de Gantt del proyecto, en el que s
     \label{fig:gantt}
 \end{figure}
 
-
 \subsection{Fase 1: Definición y planificación del proyecto (M1)}
 
-La primera fase del proyecto se centra en la delimitación del problema, la definición de los objetivos y la planificación inicial del trabajo. En esta etapa se prepara la documentación necesaria para la entrega del primer módulo.
+La primera fase se centra en delimitar el problema, definir los objetivos del trabajo y establecer la planificación inicial. En esta etapa también se concreta el alcance del proyecto, diferenciando entre generación molecular, evaluación computacional y priorización de moléculas.
 
 \subsection{Fase 2: Estado del arte (M2)}
 
-En la segunda fase se realiza la revisión bibliográfica necesaria para fundamentar científicamente el proyecto. Esta revisión incluye el análisis de modelos generativos moleculares, técnicas de optimización multiobjetivo aplicadas al diseño de fármacos, modelos QSAR utilizados como funciones \textit{proxy} de afinidad y herramientas de predicción ADMET.
+La segunda fase consiste en la revisión bibliográfica necesaria para fundamentar el trabajo. Esta revisión incluye modelos generativos moleculares, representación de moléculas mediante SMILES, modelos QSAR como aproximación a la actividad biológica, predicción ADMET y estrategias de optimización multiobjetivo aplicadas al diseño molecular.
 
-\subsection{Fase 3: Diseño e implementación de la pipeline (M3)}
+\subsection{Fase 3: Diseño e implementación del flujo computacional (M3)}
 
-En esta fase se desarrolla la arquitectura computacional propuesta para la generación y evaluación de moléculas. Para ello se integra el modelo generativo molecular, se realizan procesos de validación y limpieza de las estructuras generadas y se incorporan los modelos predictivos utilizados para evaluar las moléculas. Finalmente, se implementa el procedimiento de optimización multiobjetivo basado en dominancia de Pareto.
+En esta fase se desarrolla la arquitectura computacional del proyecto. Primero se prepara el conjunto de datos de bioactividad frente a EGFR; después se ajusta el modelo generativo molecular y se generan nuevas estructuras SMILES. Posteriormente se incorporan los procesos de validación química, cálculo de descriptores, predicción de actividad, evaluación ADMET, análisis de similitud estructural y selección multiobjetivo mediante dominancia de Pareto.
 
-\subsection{Fase 4: Evaluación experimental y redacción final (M4)}
+\subsection{Fase 4: Evaluación de resultados y redacción final (M4)}
 
-En la última fase se llevan a cabo los experimentos finales utilizando la \textit{pipeline} desarrollada. Los resultados obtenidos se analizan mediante métricas cuantitativas como la diversidad estructural, la novedad molecular y el análisis del frente de Pareto.
+La última fase se dedica al análisis de los resultados obtenidos y a la elaboración de la memoria final. En esta etapa se estudia la calidad de las moléculas generadas, la reducción progresiva del conjunto molecular, el comportamiento del modelo QSAR, el perfil ADMET de las moléculas seleccionadas, la diversidad química y la interpretación crítica del conjunto final.
 
-Paralelamente se redacta la memoria del Trabajo Final de Máster, incluyendo la descripción detallada de la metodología, los resultados obtenidos y las conclusiones del estudio.
+Paralelamente, se redactan los capítulos finales de la memoria, incluyendo la metodología, los resultados, las conclusiones, las limitaciones del trabajo y las líneas futuras.
 
 \subsection{Riesgos potenciales y planes de mitigación}
 
-Durante el desarrollo del proyecto pueden aparecer diversos riesgos que afecten al cumplimiento de la planificación prevista. Entre los principales riesgos identificados se encuentran:
+Durante el desarrollo del proyecto se identificaron varios riesgos que podían afectar al cumplimiento de la planificación prevista.
 
 \medskip
 \textbf{Complejidad técnica en la integración de herramientas.}
 \smallskip
 
-La integración de diferentes modelos y librerías (modelo generativo, QSAR, ADMET-AI y herramientas de análisis molecular) puede generar problemas de compatibilidad o dificultades técnicas. Como medida de mitigación, se utilizarán librerías ampliamente documentadas y se implementarán los componentes de forma modular, permitiendo aislar y resolver posibles errores de manera independiente.
+La combinación de librerías y modelos diferentes, como RDKit, MRL, scikit-learn y ADMET-AI, podía generar problemas de compatibilidad, instalación o formato de datos. Para mitigar este riesgo, el trabajo se estructuró de forma modular, separando las etapas principales en notebooks independientes y guardando resultados intermedios en disco.
 
 \medskip
 \textbf{Coste computacional de los experimentos.}
 \smallskip
 
-La generación y evaluación de grandes conjuntos moleculares puede requerir un uso intensivo de recursos computacionales. Para mitigar este riesgo, se utilizarán experimentos controlados con tamaños de muestra progresivos, permitiendo validar el funcionamiento de la \textit{pipeline} antes de escalar los experimentos.
+La generación, validación y evaluación de grandes conjuntos moleculares puede requerir un uso elevado de recursos computacionales. Para reducir este riesgo, se utilizaron tamaños de muestra controlados y se validó el funcionamiento de cada etapa antes de ejecutar procesos más costosos.
 
+\medskip
+\textbf{Dependencia de modelos predictivos.}
+\smallskip
+
+La interpretación de los resultados depende de modelos computacionales, especialmente el modelo QSAR de actividad y las predicciones ADMET. Estas predicciones no sustituyen a la validación experimental y pueden presentar limitaciones fuera del espacio químico representado en los datos de entrenamiento. Para mitigar este riesgo, los resultados se interpretan como hipótesis moleculares priorizadas y no como candidatos farmacológicos validados.
 
 
 \section{Breve sumario de productos obtenidos}
 
-No hay que entrar en detalle: la descripción detallada se hará en el resto de capítulos.
+Como resultado del trabajo se han obtenido varios productos relacionados con las distintas fases del flujo computacional desarrollado. En primer lugar, se ha construido un conjunto de datos de bioactividad frente a EGFR a partir de registros experimentales de ChEMBL, incluyendo procesos de limpieza, normalización, canonicalización de SMILES y agregación molecular.
+
+A partir de este conjunto se ha ajustado un modelo generativo molecular preentrenado, empleado posteriormente para generar nuevas estructuras químicas representadas como SMILES. Las moléculas generadas han sido validadas, filtradas y evaluadas mediante descriptores fisicoquímicos, predicción de actividad frente a EGFR, propiedades ADMET, métricas de calidad molecular y similitud estructural.
+
+También se ha entrenado un modelo QSAR de regresión para estimar pIC$_{50}$ frente a EGFR, utilizado como señal \textit{proxy} de actividad biológica. De forma complementaria, se han incorporado predicciones ADMET mediante ADMET-AI y se ha aplicado un procedimiento de selección multiobjetivo basado en dominancia de Pareto.
+
+El producto final del proceso es un conjunto reducido de 30 moléculas seleccionadas, acompañado de tablas, métricas y visualizaciones que permiten analizar su actividad predicha, perfil ADMET, calidad molecular, novedad estructural y diversidad química. Además, el trabajo queda organizado en notebooks reproducibles que documentan las fases principales: preprocesado, generación molecular, evaluación y selección, y análisis final de resultados.
+
+
 \section{Breve descripción de los otros capítulos de la memoria}
 
-Breve explicación de los contenidos de cada capítulo y su relación con el proyecto global.
+La memoria se estructura en varios capítulos que siguen el desarrollo lógico del trabajo realizado.
+
+El \textbf{Capítulo 2} presenta el estado del arte. En él se revisan los conceptos principales relacionados con el descubrimiento computacional de fármacos, la generación molecular mediante inteligencia artificial, la representación de moléculas, los modelos QSAR, la predicción de propiedades ADMET y la optimización multiobjetivo aplicada al diseño molecular.
+
+El \textbf{Capítulo 3} describe los materiales y métodos empleados. Se detallan las fuentes de datos, el preprocesado del conjunto de bioactividad frente a EGFR, el ajuste del modelo generativo, el entrenamiento del modelo QSAR, la evaluación ADMET, el cálculo de descriptores moleculares, el análisis de similitud estructural y el procedimiento de selección mediante dominancia de Pareto.
+
+El \textbf{Capítulo 4} recoge los resultados obtenidos tras ejecutar el flujo computacional completo. Se analiza la calidad de las moléculas generadas, la reducción progresiva del conjunto molecular, el rendimiento del modelo QSAR, la distribución de actividad predicha, el perfil ADMET de las moléculas seleccionadas, su novedad estructural, su diversidad química y los principales riesgos detectados.
+
+El \textbf{Capítulo 5} presenta las conclusiones del trabajo y las líneas futuras. En él se resume el grado de cumplimiento de los objetivos, se interpretan las principales aportaciones metodológicas, se discuten las limitaciones del enfoque y se proponen posibles extensiones, como la incorporación de validación estructural mediante \textit{docking}, análisis más avanzados de sintetizabilidad o modelos generativos condicionados.
+
 \section{Declaración sobre el uso de inteligencia artificial generativa}
 
-Explicación de cualquier uso que se haya hecho de herramientas de inteligencia artificial generativa (como ChatGPT, Gemini, DALL-E, u otras) durante la concepción y desarrollo de este Trabajo Final, así como la redacción de esta memoria y la preparación de la presentación. Es obligatorio especificar las herramientas concretas utilizadas, la finalidad (por ejemplo, ideación, esbozo de código, corrección gramatical, generación de imágenes, etc.), los períodos o fases del trabajo en los que se emplearon, las acciones realizadas para validar los contenidos generados mediante IA y una valoración crítica del impacto de su uso. Se debe aclarar explícitamente qué partes del trabajo son autoría íntegra del estudiante y cuáles se han basado en inputs o resultados generados por IA, asegurando en todo momento que la responsabilidad intelectual y la validación final del contenido recaen totalmente en el estudiante, y que su uso ha sido discutido con el tutor/a del Trabajo y se ha realizado acorde a sus indicaciones. 
+Durante la realización de este Trabajo Final de Máster se han utilizado herramientas de inteligencia artificial generativa como apoyo auxiliar en distintas fases del proyecto. En particular, se ha empleado ChatGPT para tareas de ideación, estructuración de apartados, mejora de redacción, revisión de coherencia narrativa, explicación de conceptos técnicos y apoyo en la depuración o reorganización de fragmentos de código.
+
+El uso de estas herramientas se ha limitado a funciones de asistencia. Las decisiones metodológicas, la selección de datos, la ejecución de los notebooks, el entrenamiento de modelos, la generación de resultados, la interpretación final y la validación de los contenidos han sido responsabilidad del autor. Los resultados numéricos, tablas y figuras incluidos en la memoria proceden de la ejecución del código desarrollado para el proyecto y no de contenidos generados automáticamente por herramientas de IA.
+
+Los textos generados o sugeridos mediante inteligencia artificial han sido revisados, modificados y validados antes de su incorporación a la memoria. En particular, se ha comprobado que las explicaciones fueran coherentes con la metodología realmente aplicada, que no se atribuyeran capacidades no implementadas al sistema desarrollado y que las limitaciones del trabajo quedaran reflejadas de forma explícita.
+
+Asimismo, se ha evitado utilizar la inteligencia artificial generativa como fuente bibliográfica primaria. Las referencias científicas empleadas en la memoria proceden de fuentes documentales consultadas y citadas de forma independiente. La IA generativa se ha utilizado como herramienta de apoyo a la escritura y organización del trabajo, no como sustituto del análisis crítico ni de la validación técnica.
+
+En consecuencia, la autoría intelectual del trabajo, la responsabilidad sobre los resultados presentados y la validación final de la memoria recaen íntegramente en el autor. El uso de herramientas de inteligencia artificial generativa se ha realizado como apoyo complementario dentro del proceso de elaboración del TFM.
+
+
+
 
 
 \chapter{Estado del arte}
@@ -1411,6 +1405,59 @@ La Tabla~\ref{tab:riesgos_shortlist_resultados} resume los resultados. De las 30
     \label{tab:riesgos_shortlist_resultados}
 \end{table}
 
+\chapter{Conclusiones}
+
+Este Trabajo Final de Máster ha desarrollado una \textit{pipeline} computacional para la generación, evaluación y priorización de moléculas \textit{drug-like} con señal \textit{proxy} de actividad frente a EGFR. El objetivo principal no era validar experimentalmente nuevos inhibidores, sino comprobar si la combinación de un modelo generativo molecular preentrenado, un modelo QSAR de actividad, predicciones ADMET y una estrategia de selección multiobjetivo podía transformar una muestra generativa amplia en un conjunto reducido de hipótesis moleculares priorizadas bajo criterios explícitos.
+
+Los resultados obtenidos muestran que la estrategia propuesta es viable como herramienta de priorización temprana. A partir de 10.000 SMILES brutos generados, la \textit{pipeline} obtuvo 9.068 moléculas válidas, únicas y nuevas respecto al conjunto de entrenamiento. Tras aplicar filtros fisicoquímicos, predicción de actividad, evaluación ADMET, control de similitud estructural y selección mediante dominancia de Pareto, el conjunto se redujo hasta una \textit{shortlist} final de 30 candidatas. Esta reducción progresiva demuestra que la calidad final de las candidatas no procede únicamente del modelo generativo, sino del proceso posterior de evaluación y selección multiobjetivo.
+
+El modelo generativo ajustado al dominio químico asociado a EGFR mantuvo una calidad generativa adecuada. La época 3 fue seleccionada como punto de compromiso entre adaptación al dominio y conservación de validez, unicidad y novedad. Esta decisión confirma que, en modelos generativos moleculares, continuar el ajuste durante más épocas no implica necesariamente una mejora de la calidad final, ya que puede aumentar el riesgo de pérdida de validez o de acercamiento excesivo al conjunto de entrenamiento.
+
+El modelo QSAR empleado proporcionó una señal útil de priorización relativa, aunque no debe interpretarse como una medida exacta de potencia biológica. Su rendimiento fue razonable para una tarea de cribado temprano, especialmente por la correlación de Spearman observada en el conjunto de prueba. Sin embargo, el error absoluto medio obtenido obliga a interpretar las predicciones de pIC$_{50}$ como una aproximación y no como evidencia directa de afinidad experimental. Esta limitación es especialmente importante en las moléculas más alejadas del dominio químico del conjunto de entrenamiento.
+
+La selección multiobjetivo permitió identificar moléculas con distintos perfiles de compromiso. La \textit{shortlist} final no debe entenderse como un ranking lineal de mejores compuestos, sino como una cartera de hipótesis con perfiles diferenciados. Algunas candidatas destacan por su equilibrio global entre actividad predicha, calidad molecular y criterios ADMET; otras presentan mayor actividad estimada pero también señales de riesgo; y otras resultan interesantes por su novedad estructural frente a inhibidores EGFR aprobados o de referencia. Esta diversidad de perfiles es precisamente una de las ventajas del enfoque basado en Pareto, ya que evita reducir el problema a una única función de recompensa agregada.
+
+Uno de los resultados más relevantes del trabajo es que la actividad predicha por sí sola no es suficiente para seleccionar candidatas defendibles. Aunque una parte importante de las moléculas generadas presentó valores favorables de pIC$_{50}$ predicha, muchas de ellas mostraron riesgos ADMET, baja calidad molecular relativa o incertidumbre por similitud estructural. En particular, el criterio hERG apareció como una de las principales señales de riesgo dentro del conjunto final. Esto refuerza la necesidad de incorporar restricciones farmacocinéticas y toxicológicas desde fases tempranas del diseño molecular computacional.
+
+Desde el punto de vista metodológico, el trabajo confirma que una estrategia de optimización post-generación puede ser útil cuando el modelo generativo empleado no es condicional. En este caso, el modelo MRL genera moléculas a partir de una distribución aprendida, mientras que la optimización se realiza posteriormente mediante scoring, filtrado, control de dominio de aplicabilidad y selección multiobjetivo. Esta aproximación es menos ambiciosa que un modelo generativo directamente condicionado por objetivos, pero resulta más sencilla, reproducible y adecuada para una arquitectura modular de ciencia de datos aplicada.
+
+En conjunto, los resultados son coherentes con lo esperado: el modelo generativo produce muchas moléculas químicamente válidas y razonables, pero solo una fracción reducida mantiene simultáneamente actividad estimada, perfil ADMET aceptable, novedad estructural y calidad molecular. El resultado no debe interpretarse como el descubrimiento de nuevos inhibidores de EGFR, sino como una demostración de que la \textit{pipeline} permite priorizar de forma trazable y cuantitativa un subconjunto manejable de moléculas para análisis posteriores.
+
+\section{Grado de cumplimiento de los objetivos}
+
+El objetivo principal del trabajo se considera alcanzado. Se ha diseñado e implementado una \textit{pipeline} computacional modular que integra generación molecular, evaluación QSAR, predicción ADMET, cálculo de descriptores fisicoquímicos, análisis de similitud estructural y selección mediante dominancia de Pareto.
+
+También se han cumplido los objetivos relacionados con la generación de estructuras SMILES válidas, la integración de un modelo predictivo de actividad frente a EGFR, la incorporación de criterios ADMET y la construcción de una \textit{shortlist} final de candidatas priorizadas. Asimismo, se ha analizado la novedad estructural y la diversidad química del conjunto final mediante similitud de Tanimoto y scaffolds de Murcko.
+
+No obstante, algunos objetivos iniciales deben interpretarse con matices. La actividad frente a EGFR se ha estimado mediante un modelo QSAR y, por tanto, representa una señal \textit{proxy}. Además, la optimización no se ha realizado durante la generación molecular, sino en una fase posterior de evaluación y selección. Por ello, el trabajo demuestra la utilidad de una estrategia de priorización post-generación, pero no la de un modelo generativo condicionado directamente por múltiples objetivos.
+
+\section{Seguimiento de la planificación y metodología}
+
+La metodología seguida fue adecuada para el alcance del trabajo, ya que permitió dividir el problema en módulos independientes y reproducibles: preprocesado, generación, scoring, selección y análisis final. Esta separación facilitó la trazabilidad de los resultados y permitió auditar cada etapa de la \textit{pipeline}.
+
+Durante el desarrollo fue necesario introducir decisiones metodológicas específicas para garantizar la calidad del flujo. Entre ellas destacan la selección de un checkpoint intermedio del modelo generativo, la evaluación del modelo QSAR mediante partición por scaffold, la definición de un conjunto elegible antes de aplicar Pareto y la separación entre filtros ADMET duros y puntuaciones ADMET blandas. Estas decisiones mejoraron la robustez del análisis y evitaron una interpretación excesivamente optimista de las moléculas generadas.
+
+La principal limitación metodológica es que todos los resultados dependen de modelos computacionales. Ni la actividad predicha ni las propiedades ADMET sustituyen a ensayos experimentales. Además, la ausencia de validación estructural mediante \textit{docking} o dinámica molecular limita la capacidad de evaluar la plausibilidad de unión de las candidatas al bolsillo de EGFR. Por tanto, la \textit{pipeline} debe entenderse como una herramienta de cribado y priorización temprana, no como una validación farmacológica.
+
+\section{Impacto ético, social y de sostenibilidad}
+
+El trabajo contribuye positivamente a la sostenibilidad en la medida en que propone una estrategia computacional para priorizar moléculas antes de una posible síntesis o validación experimental. Este tipo de aproximación puede ayudar a reducir recursos materiales, tiempo y costes en fases tempranas del descubrimiento de fármacos.
+
+Al mismo tiempo, el uso de modelos preentrenados y de experimentos controlados permitió limitar el coste computacional del proyecto, evitando entrenamientos profundos desde cero. No obstante, se reconoce que cualquier flujo basado en inteligencia artificial implica consumo energético y que este aspecto debe considerarse en futuros escalados de la metodología.
+
+Desde el punto de vista ético, el principal riesgo sería sobreinterpretar las moléculas generadas como candidatos farmacológicos reales. Para mitigar este riesgo, el trabajo presenta de forma explícita sus limitaciones: las predicciones QSAR y ADMET son aproximaciones estadísticas, las candidatas no han sido validadas experimentalmente y los resultados deben considerarse hipótesis para análisis posterior. Esta comunicación transparente es esencial en aplicaciones de inteligencia artificial al descubrimiento de fármacos.
+
+\section{Trabajos futuros}
+
+Como continuación natural del trabajo, la primera línea futura sería incorporar validación estructural mediante \textit{docking} molecular frente a estructuras relevantes de EGFR, incluyendo variantes asociadas a resistencia cuando sea posible. Esto permitiría evaluar si las moléculas priorizadas presentan modos de unión plausibles y complementar la señal QSAR con información estructural.
+
+Una segunda línea consistiría en refinar el tratamiento de riesgos ADMET, especialmente hERG. Dado que varias candidatas finales presentan señales desfavorables en este endpoint, sería conveniente construir una \textit{shortlist} conservadora alternativa que exija superar hERG como criterio obligatorio, y compararla con la \textit{shortlist} actual.
+
+También sería recomendable incorporar estimaciones adicionales de sintetizabilidad y disponibilidad química, como SA score, retrosíntesis computacional o búsqueda de fragmentos comerciales. Esto permitiría distinguir mejor entre moléculas interesantes desde el punto de vista computacional y moléculas realmente viables para validación experimental.
+
+Otra mejora futura sería comparar de forma más sistemática la selección multiobjetivo frente a baselines alternativos, como ranking exclusivo por pIC$_{50}$, ranking por \textit{reward score} agregado o muestreo generativo sin selección Pareto. Esta comparación permitiría cuantificar con mayor precisión el valor añadido de la estrategia multiobjetivo.
+
+Finalmente, una línea más ambiciosa sería sustituir la optimización post-generación por un modelo generativo condicionado o por un esquema de aprendizaje por refuerzo que incorpore actividad, ADMET, novedad y sintetizabilidad durante la propia generación. Esto permitiría estudiar si la optimización integrada produce mejores perfiles que la estrategia modular desarrollada en este trabajo.
 
 \chapter{Conclusiones y trabajos futuros}
 
