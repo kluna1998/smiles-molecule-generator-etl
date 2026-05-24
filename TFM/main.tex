@@ -59,6 +59,11 @@ The aim of this work is not to experimentally validate new EGFR inhibitors, but 
 \usepackage{float}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{seqsplit}
+\usepackage{url}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \begin{document}
 
 \estructura
@@ -74,17 +79,17 @@ The aim of this work is not to experimentally validate new EGFR inhibitors, but 
 
 \section{Contexto y justificación}
 
-El descubrimiento de nuevos compuestos terapéuticos puede formularse, en sus etapas iniciales, como un problema de exploración y priorización dentro de un espacio químico extremadamente amplio. La cantidad de moléculas potencialmente \textit{drug-like} es tan elevada que resulta inviable evaluarlas de forma exhaustiva mediante métodos experimentales. Por ello, las herramientas computacionales y los modelos de inteligencia artificial se han convertido en recursos relevantes para explorar regiones del espacio químico y priorizar estructuras con propiedades compatibles con el desarrollo farmacéutico [1].
+El descubrimiento de nuevos compuestos terapéuticos puede formularse, en sus etapas iniciales, como un problema de exploración y priorización dentro de un espacio químico extremadamente amplio. La cantidad de moléculas potencialmente \textit{drug-like} es tan elevada que resulta inviable evaluarlas de forma exhaustiva mediante métodos experimentales. Por ello, las herramientas computacionales y los modelos de inteligencia artificial se han convertido en recursos relevantes para explorar regiones del espacio químico y priorizar estructuras con propiedades compatibles con el desarrollo farmacéutico [\ref{ref:kattuparambil2025}].
 
-En este contexto, los modelos generativos moleculares permiten proponer nuevas estructuras químicas a partir de patrones aprendidos en grandes colecciones de moléculas. El uso de modelos preentrenados resulta especialmente atractivo, ya que permite reutilizar conocimiento químico previamente aprendido sin necesidad de entrenar un generador desde cero para cada problema específico [2]. Sin embargo, generar moléculas químicamente válidas no garantiza que estas presenten actividad biológica, propiedades farmacocinéticas adecuadas, baja toxicidad o una calidad molecular suficiente para ser consideradas hipótesis prometedoras.
+En este contexto, los modelos generativos moleculares permiten proponer nuevas estructuras químicas a partir de patrones aprendidos en grandes colecciones de moléculas. El uso de modelos preentrenados resulta especialmente atractivo, ya que permite reutilizar conocimiento químico previamente aprendido sin necesidad de entrenar un generador desde cero para cada problema específico [\ref{ref:zhang2024}]. Sin embargo, generar moléculas químicamente válidas no garantiza que estas presenten actividad biológica, propiedades farmacocinéticas adecuadas, baja toxicidad o una calidad molecular suficiente para ser consideradas hipótesis prometedoras.
 
-El diseño molecular con fines terapéuticos es, por naturaleza, un problema multiobjetivo. Una molécula candidata no puede evaluarse únicamente por su posible afinidad frente a una diana, ya que una alta actividad estimada puede ir acompañada de perfiles ADMET desfavorables, baja calidad fisicoquímica o escasa viabilidad posterior. De forma análoga, priorizar únicamente propiedades de \textit{drug-likeness} puede llevar a estructuras químicamente razonables pero poco relevantes frente a la diana terapéutica. Por tanto, resulta necesario incorporar estrategias que permitan analizar compromisos entre actividad estimada, calidad molecular, propiedades farmacocinéticas, toxicidad y novedad estructural [4].
+El diseño molecular con fines terapéuticos es, por naturaleza, un problema multiobjetivo. Una molécula candidata no puede evaluarse únicamente por su posible afinidad frente a una diana, ya que una alta actividad estimada puede ir acompañada de perfiles ADMET desfavorables, baja calidad fisicoquímica o escasa viabilidad posterior. De forma análoga, priorizar únicamente propiedades de \textit{drug-likeness} puede llevar a estructuras químicamente razonables pero poco relevantes frente a la diana terapéutica. Por tanto, resulta necesario incorporar estrategias que permitan analizar compromisos entre actividad estimada, calidad molecular, propiedades farmacocinéticas, toxicidad y novedad estructural [\ref{ref:angelo2023}].
 
-El presente Trabajo Final de Máster se centra en EGFR (\textit{Epidermal Growth Factor Receptor}), una diana terapéutica ampliamente estudiada en oncología y especialmente relevante en el contexto de tumores como el cáncer de pulmón de células no pequeñas. La existencia de inhibidores conocidos, datos experimentales de bioactividad y problemas clínicos asociados a resistencia farmacológica convierten a EGFR en un caso de estudio adecuado para evaluar una pipeline de generación y priorización molecular asistida por inteligencia artificial [5].
+El presente Trabajo Final de Máster se centra en EGFR (\textit{Epidermal Growth Factor Receptor}), una diana terapéutica ampliamente estudiada en oncología y especialmente relevante en el contexto de tumores como el cáncer de pulmón de células no pequeñas. La existencia de inhibidores conocidos, datos experimentales de bioactividad y problemas clínicos asociados a resistencia farmacológica convierten a EGFR en un caso de estudio adecuado para evaluar una pipeline de generación y priorización molecular asistida por inteligencia artificial [\ref{ref:nada2023}].
 
 A diferencia de enfoques estructurales basados en \textit{docking} molecular o simulaciones de dinámica molecular, este trabajo adopta una perspectiva centrada en ciencia de datos e inteligencia artificial aplicada. La actividad frente a EGFR se estima mediante un modelo QSAR entrenado a partir de datos experimentales de ChEMBL, utilizando la pIC$_{50}$ predicha como señal \textit{proxy} de actividad biológica. Esta aproximación no sustituye a la validación experimental ni a la evaluación estructural, pero permite realizar una priorización computacional eficiente sobre un conjunto amplio de moléculas generadas.
 
-La pipeline propuesta combina generación molecular, validación química, cálculo de descriptores fisicoquímicos, predicción de actividad, evaluación ADMET mediante ADMET-AI [3], análisis de similitud estructural y selección multiobjetivo basada en dominancia de Pareto. El modelo generativo empleado no es condicional, por lo que la optimización no ocurre durante la generación de moléculas, sino en una fase posterior de scoring, filtrado y selección. Esta decisión metodológica permite construir un flujo modular, reproducible y auditable, donde cada etapa contribuye de forma explícita a reducir el espacio inicial de moléculas hasta obtener una shortlist final de hipótesis priorizadas.
+La pipeline propuesta combina generación molecular, validación química, cálculo de descriptores fisicoquímicos, predicción de actividad, evaluación ADMET mediante ADMET-AI [\ref{ref:swanson2024}], análisis de similitud estructural y selección multiobjetivo basada en dominancia de Pareto. El modelo generativo empleado no es condicional, por lo que la optimización no ocurre durante la generación de moléculas, sino en una fase posterior de scoring, filtrado y selección. Esta decisión metodológica permite construir un flujo modular, reproducible y auditable, donde cada etapa contribuye de forma explícita a reducir el espacio inicial de moléculas hasta obtener una shortlist final de hipótesis priorizadas.
 
 El objetivo del trabajo no es descubrir ni validar experimentalmente nuevos inhibidores de EGFR, sino diseñar y evaluar una arquitectura computacional capaz de transformar una muestra generativa amplia en un conjunto reducido de moléculas priorizadas bajo criterios explícitos. Por tanto, las moléculas seleccionadas deben interpretarse como hipótesis computacionales para análisis posteriores, no como candidatos farmacológicos validados. Esta distinción es esencial para situar correctamente el alcance del proyecto y evitar una sobreinterpretación de los resultados obtenidos mediante modelos predictivos.
 
@@ -258,25 +263,25 @@ Todas las sugerencias obtenidas mediante esta herramienta han sido revisadas, mo
 
 \section{Descubrimiento de Fármacos Asistido por IA}
 
-A diferencia de la industria tecnológica, que se ha beneficiado históricamente de la Ley de Moore, el sector farmacéutico se enfrenta a la denominada Ley de Eroom, la cual describe una disminución sostenida en la productividad de la investigación y desarrollo (I+D). En la actualidad, el coste medio de llevar un fármaco al mercado supera los 2.600 millones de dólares, con tiempos de desarrollo que oscilan entre los 10 y 15 años [8].
+El descubrimiento de nuevos fármacos sigue siendo un proceso largo, costoso y con una elevada tasa de fracaso. A diferencia de la industria tecnológica, donde el aumento de capacidad computacional ha reducido costes y acelerado ciclos de desarrollo, el sector farmacéutico se ha enfrentado a una disminución sostenida de productividad conocida como Ley de Eroom [\ref{ref:scannell2012}]. En este contexto, se han descrito costes medios de desarrollo superiores a los 2.600 millones de dólares y tiempos habituales de 10 a 15 años hasta la llegada de un fármaco al mercado [\ref{ref:dimasi2016}].
 
-Este proceso tradicional se caracteriza además por una elevada tasa de fracaso: más del 90–93\% de los candidatos no superan los ensayos clínicos. Las principales causas de estos fracasos son la falta de eficacia clínica y perfiles inadecuados de seguridad y propiedades ADMET (absorción, distribución, metabolismo, excreción y toxicidad), que no pueden predecirse con precisión mediante modelos animales o estudios in vitro tempranos [9].
+Una de las razones de esta dificultad es que el descubrimiento farmacológico no consiste únicamente en encontrar una molécula activa frente a una diana. Un candidato debe combinar actividad biológica, propiedades fisicoquímicas compatibles con el uso terapéutico, perfil farmacocinético adecuado y bajo riesgo toxicológico. De hecho, una proporción muy elevada de candidatos fracasa durante el desarrollo clínico, principalmente por falta de eficacia, toxicidad o propiedades ADMET desfavorables [\ref{ref:sun2022},\ref{ref:niazi2025}].
 
-A ello se suma la inmensidad del espacio químico, que abarca trillones de posibles moléculas con propiedades farmacológicas potenciales. El cribado experimental exhaustivo resulta inviable, ya que los métodos tradicionales de cribado de alto rendimiento (HTS) solo permiten evaluar bibliotecas físicas limitadas de compuestos, explorando así una fracción ínfima del universo químico accesible [13].
+A esta complejidad se suma la magnitud del espacio químico. El número de moléculas potencialmente sintetizables o con propiedades tipo fármaco es tan elevado que el cribado experimental exhaustivo resulta inviable. Por ello, los métodos computacionales se han convertido en herramientas relevantes para explorar, filtrar y priorizar regiones del espacio químico antes de plantear estudios experimentales [\ref{ref:kattuparambil2025}]. Dentro de este marco, la inteligencia artificial permite combinar generación molecular, predicción de propiedades y selección multiobjetivo, que son precisamente los bloques conceptuales sobre los que se apoya este trabajo.
 
 \subsection{Evolución de la computación química}
 
-La computación química ha experimentado una transformación significativa, pasando de modelos lineales QSAR a un paradigma dominado por la inteligencia artificial, especialmente la IA generativa. Este cambio ha permitido abordar el vasto espacio químico de manera mucho más eficiente que los enfoques tradicionales. Entre las herramientas clásicas, el molecular docking permite simular la interacción entre una molécula candidata y su diana biológica, generalmente una proteína, mientras que las simulaciones de dinámica molecular permiten analizar la estabilidad de estos complejos. Asimismo, se emplean métodos computacionales para predecir propiedades clave como la solubilidad, toxicidad y comportamiento ADME de los compuestos.
+La computación química ha evolucionado desde métodos clásicos de relación estructura-actividad hacia enfoques más amplios basados en aprendizaje automático y aprendizaje profundo. Tradicionalmente, técnicas como QSAR, docking molecular o dinámica molecular han permitido estimar actividad, afinidad o estabilidad de complejos ligando-proteína. El docking y la dinámica molecular aportan información estructural valiosa, pero requieren una estructura de la diana, una definición razonable del bolsillo de unión y un coste computacional superior al de los modelos ligando-céntricos [\ref{ref:oliveira2025},\ref{ref:niazi2025}].
 
-La incorporación de técnicas de machine learning ha supuesto un avance significativo, ya que permite analizar grandes volúmenes de datos químicos y biológicos para identificar patrones y predecir la actividad de nuevas moléculas. Más aún, los modelos de IA generativa son capaces de diseñar estructuras químicas completamente nuevas (de novo), optimizando simultáneamente múltiples propiedades relevantes.
-La irrupción del aprendizaje profundo ha ampliado considerablemente estas capacidades. Arquitecturas como las Redes Neuronales de Grafos (GNN), que representan átomos como nodos y enlaces como aristas, o las redes convolucionales (CNN), permiten aprender directamente a partir de representaciones químicas como SMILES o grafos moleculares, sin necesidad de ingeniería manual de características. Esto ha mejorado notablemente la predicción de propiedades moleculares y la modelización de interacciones fármaco-diana [8].
+En paralelo, los modelos de machine learning han permitido aprender patrones a partir de grandes colecciones de moléculas y datos de bioactividad. En lugar de evaluar únicamente compuestos existentes, los modelos generativos permiten proponer nuevas estructuras químicas, mientras que los modelos predictivos ayudan a estimar propiedades relevantes para priorizarlas [\ref{ref:oliveira2025},\ref{ref:zhang2024}]. Este cambio desplaza parte del proceso desde un cribado puramente experimental hacia una etapa previa de exploración computacional, donde se busca reducir el número de hipótesis antes de invertir recursos en validación.
 
-En consecuencia, el enfoque ha evolucionado desde la predicción de propiedades de moléculas existentes hacia el diseño de novo de nuevas entidades químicas. Mediante modelos como los Autocodificadores Variacionales (VAE), las Redes Antagónicas Generativas (GAN) y, más recientemente, los modelos de difusión, la IA permite explorar un espacio químico estimado en trillones de moléculas. Esto facilita la generación de candidatos innovadores que optimizan simultáneamente la potencia, la seguridad y la viabilidad sintética, muchos de los cuales nunca han sido sintetizados previamente [13].
+En este trabajo se adopta una aproximación ligando-céntrica basada en SMILES, QSAR, ADMET y selección multiobjetivo. No se pretende reemplazar métodos estructurales como el docking, sino construir una etapa inicial de priorización rápida y reproducible. Esta decisión es coherente con una fase temprana del diseño molecular, en la que el objetivo principal es ordenar y filtrar una muestra amplia de moléculas generadas bajo criterios explícitos.
 
 \section{Parámetros de Calidad Molecular en el Diseño \textit{de novo} de Fármacos}
+
 \subsection{Pequeñas moléculas como modalidad terapéutica}
 
-Las pequeñas moléculas constituyen la clase más extensa de agentes terapéuticos, representando aproximadamente el 90\% de los fármacos comercializados. Se definen principalmente por su estructura química y sus propiedades fisicoquímicas, siendo compuestos orgánicos de bajo peso molecular, generalmente inferiores a 1000 Da, formados por elementos como carbono, hidrógeno, nitrógeno, oxígeno y azufre. Este tamaño reducido es una característica clave que las diferencia de las macromoléculas y de los fármacos biológicos, y condiciona de forma directa su comportamiento farmacológico [8,7].
+Las pequeñas moléculas constituyen una modalidad terapéutica especialmente relevante por su tamaño reducido, su posible administración oral, su capacidad para atravesar membranas biológicas y su acceso a dianas intracelulares. Se trata, en general, de compuestos orgánicos de bajo peso molecular cuyas propiedades fisicoquímicas condicionan su absorción, distribución y comportamiento farmacológico [\ref{ref:kattuparambil2025},\ref{ref:niazi2025}].
 
 \begin{figure}[h]
     \centering
@@ -285,44 +290,29 @@ Las pequeñas moléculas constituyen la clase más extensa de agentes terapéuti
     \label{fig:small_vs_large}
 \end{figure}
 
-
-Una de las principales ventajas de las pequeñas moléculas reside en su elevada biodisponibilidad y permeabilidad:
-
-\begin{itemize}
-    \item \textbf{Biodisponibilidad oral:} Debido a su bajo peso molecular y propiedades fisicoquímicas, estas moléculas presentan una alta probabilidad de absorción eficiente en el tracto gastrointestinal, lo que permite su administración por vía oral.
-    
-    \item \textbf{Permeabilidad celular y tisular:} Su tamaño compacto les otorga una capacidad superior para penetrar membranas biológicas y alcanzar dianas terapéuticas intracelulares que no son accesibles para anticuerpos o proteínas.
-    
-    \item \textbf{Penetración en tejidos:} Presentan una mejor distribución en tejidos sólidos, como los tumores poco vascularizados, lo que las hace especialmente valiosas en terapias oncológicas e inmunomoduladoras.
-    
-    \item \textbf{Estabilidad y coste:} Además de su eficacia biológica, ofrecen ventajas prácticas como una mayor estabilidad en condiciones fisiológicas y menores costes de producción en comparación con los fármacos biológicos.
-\end{itemize}
-
-Para garantizar que estas moléculas sean candidatos viables, se suelen aplicar criterios de \textit{drug-likeness}, como la Regla de Cinco de Lipinski, que utiliza propiedades como el peso molecular (típicamente $<500$ Da), la lipofilicidad y la capacidad de formar enlaces de hidrógeno para predecir la biodisponibilidad oral y el éxito clínico de un compuesto.
+Desde el punto de vista computacional, el interés de las pequeñas moléculas reside en que pueden representarse, generararse y evaluarse mediante descriptores moleculares, huellas estructurales y modelos predictivos. Sin embargo, que una molécula sea pequeña no implica automáticamente que sea adecuada como fármaco. Para que una estructura generada sea una hipótesis razonable debe situarse en rangos fisicoquímicos compatibles con absorción, permeabilidad, solubilidad y estabilidad. Para ello se emplean criterios de \textit{drug-likeness}, como la Regla de Cinco de Lipinski, que relaciona peso molecular, lipofilicidad y capacidad de formar enlaces de hidrógeno con la probabilidad de absorción y permeabilidad oral [\ref{ref:lipinski2001}].
 
 \subsection{Propiedades drug-like y calidad molecular}
 
-La evaluación de la \textit{drug-likeness} o semejanza a fármaco constituye un filtro crítico para identificar compuestos con alta probabilidad de éxito clínico en función de sus propiedades fisicoquímicas. Históricamente, este concepto ha estado guiado por la Regla de Cinco de Lipinski, formulada en 1997 para predecir la absorción oral y la permeabilidad de un compuesto a partir del análisis de fármacos activos por vía oral. Sus criterios fundamentales incluyen un peso molecular inferior a 500 Da, un LogP menor de 5 y límites en el número de donadores y aceptores de enlaces de hidrógeno.
+La evaluación de la \textit{drug-likeness} permite descartar moléculas con propiedades claramente alejadas de las observadas en fármacos orales conocidos. La Regla de Cinco de Lipinski sigue siendo una referencia clásica porque ofrece una primera aproximación sencilla basada en cuatro propiedades: peso molecular, LogP, donadores de enlaces de hidrógeno y aceptores de enlaces de hidrógeno [\ref{ref:lipinski2001}]. No obstante, estas reglas son filtros aproximados, no garantías de éxito farmacológico.
 
-No obstante, para superar la naturaleza binaria y rígida de estas reglas, se desarrolló el concepto de \textit{drug-likeness} continuo mediante el QED (\textit{Quantitative Estimate of Drug-likeness}). El QED proporciona una puntuación entre 0 (no \textit{drug-like}) y 1 (altamente \textit{drug-like}), integrando ocho descriptores moleculares, como el área de superficie polar (TPSA) y la aromaticidad, y comparándolos con la distribución de fármacos ya aprobados en el mercado. Esta métrica permite una evaluación más matizada y prioriza candidatos con perfiles farmacéuticos prometedores más allá de filtros estrictos [9].
+Para obtener una visión menos binaria se han propuesto métricas continuas como QED (\textit{Quantitative Estimate of Drug-likeness}). QED resume en una puntuación entre 0 y 1 distintas propiedades moleculares asociadas a fármacos conocidos, incluyendo peso molecular, LogP, TPSA, donadores y aceptores de enlace de hidrógeno, enlaces rotables, aromaticidad y alertas estructurales [\ref{ref:bickerton2012},\ref{ref:rdkit}]. En una pipeline generativa, esta métrica permite priorizar moléculas con un perfil global más compatible con compuestos tipo fármaco.
 
-Valores altos de QED indican perfiles farmacéuticos favorables. De forma complementaria, el \textit{synthetic accessibility score} (SAS) estima la viabilidad de sintetizar un compuesto en el laboratorio. Este índice integra la frecuencia de aparición de fragmentos estructurales y penalizaciones asociadas a la complejidad molecular, lo que lo convierte en un indicador práctico y ampliamente utilizado de la tratabilidad química. Las moléculas con valores favorables de QED y SAS presentan una mayor probabilidad de avanzar con éxito desde la generación computacional hasta la validación experimental [9].
+Otra métrica habitual en diseño \textit{de novo} es el \textit{synthetic accessibility score} (SAS), que estima la dificultad de síntesis a partir de contribuciones de fragmentos y penalizaciones de complejidad estructural [\ref{ref:ertl2009}]. Su interpretación es inversa a QED: valores bajos indican estructuras más accesibles y valores altos indican mayor complejidad sintética. Aunque SAS es muy relevante para etapas posteriores, en este trabajo no se incorpora como variable calculada en la pipeline. Por tanto, debe entenderse como una limitación metodológica y una posible extensión futura, no como un criterio usado en la selección final.
 
-Un valor bajo de SAS indica una síntesis sencilla, mientras que valores cercanos a 10 corresponden a estructuras extremadamente complejas. En el contexto de los modelos generativos, el SAS resulta especialmente relevante, ya que estos algoritmos, si no se restringen adecuadamente, pueden proponer estructuras físicamente improbables, ``antinaturales'' o inviables desde el punto de vista sintético. La incorporación del SAS en esquemas de optimización multiobjetivo garantiza que los candidatos generados no solo sean teóricamente potentes, sino también químicamente accesibles para su validación experimental y eventual escalado industrial [13].
-
-En conjunto, los candidatos óptimos se sitúan en la región de alto QED y bajo SAS, lo que pone de manifiesto la necesidad de equilibrar las propiedades farmacocinéticas con la viabilidad sintética.
+En conjunto, la calidad molecular no debe interpretarse como una única propiedad, sino como un equilibrio entre tamaño, lipofilicidad, polaridad, flexibilidad, capacidad de interacción y ausencia de alertas estructurales graves. Esta idea justifica que el trabajo combine filtros fisicoquímicos, QED, reglas tipo Lipinski, predicciones ADMET y similitud estructural en lugar de depender de una sola métrica.
 
 \subsubsection{Perfil ADMET}
 
-Para que una molécula pequeña sea eficaz, no basta con que presente una alta afinidad por su diana; también debe poseer un perfil adecuado de ADMET, acrónimo de Absorción, Distribución, Metabolismo, Excreción y Toxicidad. Estas propiedades determinan la farmacocinética y la seguridad del compuesto, definiendo cómo se absorbe en el organismo, cómo se distribuye en los tejidos, cómo se metaboliza y cómo se elimina sin provocar efectos adversos [7].
+La actividad frente a una diana terapéutica no es suficiente para considerar prometedora una molécula. Un candidato debe mostrar propiedades adecuadas de absorción, distribución, metabolismo, excreción y toxicidad (ADMET). Estas dimensiones condicionan si el compuesto puede alcanzar concentraciones eficaces en el organismo sin producir riesgos inaceptables de toxicidad [\ref{ref:sun2022},\ref{ref:niazi2025}].
 
-La optimización temprana del perfil ADMET es fundamental, ya que el fracaso en estos parámetros constituye la principal causa de que aproximadamente el 90\% de los candidatos a fármacos no superen los ensayos clínicos. En los últimos años, se han desarrollado modelos predictivos basados en aprendizaje automático capaces de estimar estas propiedades a partir de la estructura molecular. Herramientas como ADMET-AI permiten evaluar de forma rápida grandes bibliotecas químicas, facilitando la integración de estas restricciones en las primeras etapas del diseño molecular.
+La predicción ADMET temprana es especialmente importante en diseño molecular generativo porque los modelos pueden producir estructuras químicamente válidas pero con perfiles farmacocinéticos o toxicológicos poco realistas. Herramientas modernas como ADMET-AI permiten estimar múltiples \textit{endpoints} de forma automatizada, incluyendo propiedades relacionadas con absorción intestinal, biodisponibilidad, permeabilidad, metabolismo por enzimas CYP, cardiotoxicidad asociada a hERG, mutagenicidad AMES, toxicidad clínica, carcinogenicidad y alertas estructurales [\ref{ref:swanson2024},\ref{ref:admet_ai_web},\ref{ref:admet_ai_github}].
+
+En una fase temprana de priorización, estas predicciones no deben interpretarse como evidencia definitiva de seguridad, sino como señales de riesgo. Por este motivo, resulta útil separar criterios ADMET duros, asociados a alertas críticas, de puntuaciones blandas que permiten ordenar moléculas con perfiles intermedios. Esta distinción evita que un riesgo toxicológico relevante quede diluido dentro de una media global aparentemente favorable [\ref{ref:swanson2024}].
 
 \subsection{EGFR como diana terapéutica}
 
-El receptor del factor de crecimiento epidérmico (EGFR) es una proteína transmembrana clave en la regulación de la señalización celular, el crecimiento y la supervivencia de las células. Su papel en el cáncer es crítico, ya que su sobreexpresión o activación desregulada está implicada en la patogénesis de diversos tumores sólidos, siendo especialmente relevante en el cáncer de pulmón de células no pequeñas (NSCLC) y en glioblastomas.
-
-A pesar del éxito de los inhibidores de tirosina quinasa (TKI), la aparición de mutaciones de resistencia limita de forma significativa su eficacia clínica. Mutaciones como T790M (conocida como la mutación ``gatekeeper'') dificultan la unión de los fármacos de primera y segunda generación, mientras que la mutación C797S suele emerger tras el tratamiento con inhibidores de tercera generación. Esta resistencia farmacológica sostenida genera una necesidad urgente de diseñar nuevas entidades químicas capaces de unirse eficazmente a estos sitios mutados, manteniendo un equilibrio adecuado entre selectividad y afinidad para superar los mecanismos de evasión tumoral[10].
+El receptor del factor de crecimiento epidérmico (EGFR) es una proteína transmembrana con actividad tirosina quinasa implicada en proliferación, supervivencia celular y señalización oncogénica. Su activación anómala o sobreexpresión se ha relacionado con distintos tumores sólidos, especialmente con el cáncer de pulmón de células no pequeñas (NSCLC), donde los inhibidores de EGFR han tenido un papel terapéutico relevante [\ref{ref:nada2023}].
 
 \begin{figure}[h]
     \centering
@@ -331,19 +321,23 @@ A pesar del éxito de los inhibidores de tirosina quinasa (TKI), la aparición d
     \label{fig:egfr_nsclc}
 \end{figure}
 
+A pesar del éxito clínico de varios inhibidores de tirosina quinasa, la aparición de mutaciones de resistencia limita su eficacia. Mutaciones como T790M pueden reducir la unión de inhibidores de primera y segunda generación, mientras que C797S se asocia con resistencia a inhibidores de tercera generación. Este escenario mantiene el interés por explorar nuevas entidades químicas relacionadas con EGFR [\ref{ref:nada2023}].
+
+Desde el punto de vista químico, una molécula \textit{EGFR-like} plausible no debería evaluarse solo por su actividad predicha. También debería presentar un peso molecular moderado, lipofilicidad controlada, polaridad compatible con permeabilidad, número razonable de donadores y aceptores de hidrógeno, y ausencia de alertas toxicológicas evidentes. Además, en química médica es importante analizar el \textit{scaffold} o núcleo estructural de una molécula, ya que pequeñas modificaciones sobre un mismo scaffold pueden generar familias de análogos con propiedades similares. Los scaffolds de Murcko ofrecen una forma simplificada de representar ese núcleo molecular y permiten estudiar diversidad estructural dentro de un conjunto de candidatos [\ref{ref:bemis1996}].
+
 \section{Representación Computacional de Moléculas y Proteínas}
 
-La representación computacional de moléculas y proteínas constituye un elemento fundamental en el diseño de fármacos asistido por inteligencia artificial, ya que determina cómo los modelos procesan la información química y biológica. La elección de la representación condiciona tanto el espacio de búsqueda explorado por los modelos generativos como la capacidad de capturar interacciones relevantes para la afinidad fármaco-diana.
+La representación computacional determina qué información química puede aprender un modelo. En descubrimiento molecular se utilizan representaciones lineales, como SMILES, representaciones basadas en grafos y representaciones tridimensionales o dependientes de la proteína. Cada una captura aspectos distintos de la molécula y condiciona tanto la generación como la predicción de propiedades [\ref{ref:zhang2024},\ref{ref:oliveira2025}].
 
 \subsection{Representación lineal mediante SMILES}
 
-El sistema SMILES (Simplified Molecular Input Line Entry System) representa moléculas como secuencias de caracteres que codifican átomos, enlaces y estructuras cíclicas. Formalmente, una molécula puede representarse como una secuencia:
+El sistema SMILES (\textit{Simplified Molecular Input Line Entry System}) codifica moléculas como cadenas de caracteres que representan átomos, enlaces, ramificaciones y ciclos [\ref{ref:weininger1988}]. Formalmente, una molécula puede representarse como una secuencia:
 
 \begin{equation}
 S = (s_1, s_2, \dots, s_n), \quad s_i \in \mathcal{V}
 \end{equation}
 
-donde $\mathcal{V}$ es el vocabulario de símbolos químicos (átomos, enlaces, paréntesis, índices de ciclo, etc.).
+donde $\mathcal{V}$ es el vocabulario de símbolos químicos.
 
 Por ejemplo, la molécula de etanol puede representarse como:
 
@@ -351,62 +345,36 @@ Por ejemplo, la molécula de etanol puede representarse como:
 \texttt{CCO}
 \end{equation}
 
-Esta notación permite tratar las moléculas como texto, facilitando la aplicación de modelos de lenguaje inspirados en el procesamiento del lenguaje natural (NLP), como los basados en arquitecturas Transformer.
+Esta notación permite tratar las moléculas como texto y facilita el uso de modelos generativos secuenciales, como redes recurrentes o modelos de lenguaje. Su principal ventaja es la simplicidad: millones de moléculas pueden almacenarse y procesarse como secuencias. Su principal limitación es que no representa explícitamente la geometría tridimensional, por lo que no captura directamente interacciones espaciales con una proteína [\ref{ref:weininger1988},\ref{ref:zhang2024}].
 
-Una de sus principales ventajas es su simplicidad y escalabilidad, lo que permite entrenar modelos generativos sobre grandes bases de datos químicas. Sin embargo, esta representación no captura explícitamente la estructura tridimensional de las moléculas, lo que puede limitar la modelización de interacciones espaciales.
+En este trabajo, SMILES es la representación central porque el modelo generativo empleado genera secuencias moleculares y las etapas posteriores de validación, canonicalización y cálculo de descriptores se realizan a partir de dichas cadenas.
 
 \subsection{Representación basada en grafos moleculares}
 
-Una alternativa más estructural consiste en representar las moléculas como grafos. Formalmente, una molécula puede definirse como un grafo:
+Una molécula también puede representarse como un grafo, donde los átomos son nodos y los enlaces son aristas. Formalmente, una molécula puede definirse como [\ref{ref:oliveira2025}]:
 
 \begin{equation}
 G = (V, E)
 \end{equation}
 
-donde $V$ es el conjunto de nodos (átomos) y $E$ el conjunto de aristas (enlaces químicos). Cada nodo $v_i \in V$ puede asociarse a un vector de características $x_i$ (tipo de átomo, carga, hibridación), y cada arista $e_{ij} \in E$ a propiedades del enlace.
-
-\subsection{Representación de proteínas y sitios de unión}
-
-En el contexto del diseño de fármacos, la representación de la proteína diana es clave para modelar la interacción con los ligandos, especialmente en casos como \textit{EGFR} (Epidermal Growth Factor Receptor).
-
-Los modelos de lenguaje de proteínas (Protein Language Models, PLMs) permiten obtener embeddings a partir de secuencias de aminoácidos. De forma análoga a SMILES, una proteína puede representarse como:
-
-\begin{equation}
-P = (a_1, a_2, \dots, a_m), \quad a_i \in \mathcal{A}
-\end{equation}
-
-donde $\mathcal{A}$ es el alfabeto de aminoácidos.
-
-Por otro lado, las representaciones basadas en el \textit{binding pocket} se centran en la región estructural donde ocurre la interacción ligando-proteína. En este caso, el entorno del bolsillo puede modelarse como un subconjunto espacial:
-
-\begin{equation}
-\mathcal{P} \subset \mathbb{R}^3
-\end{equation}
-
-donde cada punto contiene información geométrica y fisicoquímica relevante para la afinidad de unión.
-
-Estas aproximaciones permiten capturar interacciones moleculares de manera más precisa, aunque requieren información estructural tridimensional detallada.
+donde $V$ es el conjunto de nodos y $E$ el conjunto de aristas. Cada nodo puede contener información como tipo de átomo, carga o hibridación, y cada arista puede describir el tipo de enlace. Esta representación es especialmente adecuada para redes neuronales de grafos y para modelos que buscan aprender directamente la estructura molecular. Aunque el generador de este trabajo opera con SMILES, los fingerprints y varios modelos de predicción pueden interpretarse como formas comprimidas de capturar patrones estructurales derivados del grafo molecular.
 
 
 \section{Modelado predictivo de propiedades moleculares}
 
-La generación de nuevas moléculas constituye solo una parte del problema en el descubrimiento computacional de fármacos. Para que un compuesto generado pueda considerarse un candidato prometedor, es necesario estimar de manera eficiente distintas propiedades relacionadas con su actividad biológica, su perfil farmacocinético y su viabilidad química. Estos modelos son fundamentales para priorizar candidatos y optimizar la asignación de recursos en las etapas tempranas del descubrimiento de fármacos
+La generación molecular solo produce hipótesis estructurales. Para priorizarlas es necesario estimar propiedades asociadas a actividad, calidad molecular y seguridad. Por ello, las pipelines modernas de diseño molecular combinan modelos generativos con modelos predictivos y reglas de filtrado [\ref{ref:niazi2025},\ref{ref:oliveira2025}].
 
 \subsection{Modelos QSAR en descubrimiento de fármacos}
 
-Los modelos QSAR (\textit{Quantitative Structure--Activity Relationship}) constituyen una de las herramientas más consolidadas de la química computacional aplicada al descubrimiento de fármacos. Su principio fundamental consiste en establecer una relación cuantitativa entre la estructura de una molécula y una propiedad biológica de interés, como la actividad frente a una diana, la potencia inhibitoria o la afinidad de unión. Para ello, las moléculas se representan mediante descriptores fisicoquímicos, huellas moleculares (\textit{fingerprints}) o representaciones aprendidas automáticamente, que sirven como variables de entrada para algoritmos supervisados.
+Los modelos QSAR (\textit{Quantitative Structure--Activity Relationship}) relacionan la estructura de una molécula con una propiedad biológica de interés. Para ello, las moléculas se transforman en descriptores, fingerprints o representaciones aprendidas que sirven como entrada a modelos supervisados [\ref{ref:rogers2010},\ref{ref:breiman2001}].
 
-En el contexto del descubrimiento de fármacos, los QSAR desempeñan un papel especialmente relevante en fases tempranas de cribado virtual. Frente a métodos estructurales más costosos, como el \textit{docking}, estos modelos ofrecen una alternativa computacionalmente eficiente para evaluar grandes cantidades de compuestos en poco tiempo. Su utilidad práctica reside en que permiten priorizar moléculas con mayor probabilidad de presentar actividad biológica, reduciendo así el espacio de búsqueda antes de aplicar técnicas de validación más exigentes.
-
-Además de su eficiencia, una ventaja importante de los modelos QSAR es su flexibilidad. Pueden entrenarse para tareas de clasificación, por ejemplo distinguiendo compuestos activos e inactivos, o para tareas de regresión, como la predicción de valores continuos de afinidad, IC$_{50}$, K$_i$ o pIC$_{50}$. Esta versatilidad los convierte en herramientas especialmente adecuadas para integrarse dentro de pipelines computacionales en las que la actividad biológica debe evaluarse de forma masiva y repetible.
+En fases tempranas de cribado virtual, los modelos QSAR permiten evaluar grandes bibliotecas de compuestos con un coste computacional bajo. Pueden formularse como modelos de clasificación, por ejemplo para distinguir activos e inactivos, o como modelos de regresión, por ejemplo para predecir IC$_{50}$, K$_i$ o pIC$_{50}$. Esta flexibilidad los hace adecuados para integrarse en flujos generativos donde se necesita una señal rápida de actividad [\ref{ref:nada2023},\ref{ref:pham2025}].
 
 \subsubsection{QSAR como aproximación a la afinidad frente a una diana}
 
-En problemas de diseño molecular asistido por inteligencia artificial, la afinidad frente a una diana terapéutica rara vez puede medirse de forma directa durante la etapa generativa. La validación experimental requiere ensayos bioquímicos o celulares, mientras que las aproximaciones estructurales de mayor fidelidad, como el \textit{docking} o la simulación molecular, pueden resultar demasiado costosas para evaluar bibliotecas virtuales de gran tamaño. Por esta razón, es habitual recurrir a modelos QSAR entrenados específicamente sobre datos experimentales asociados a una diana concreta, utilizándolos como una aproximación o \textit{proxy} de la actividad biológica.
+En el diseño molecular asistido por IA, la afinidad real frente a una diana no puede conocerse sin ensayos experimentales. Por ello, un modelo QSAR entrenado con datos experimentales de una diana concreta puede utilizarse como señal \textit{proxy} para ordenar moléculas candidatas [\ref{ref:nada2023}]. En este trabajo, la pIC$_{50}$ predicha frente a EGFR cumple precisamente esa función: no valida actividad biológica real, pero permite priorizar moléculas que se parecen, en términos de patrones estructurales, a compuestos con actividad experimental conocida.
 
-Desde esta perspectiva, un modelo QSAR no sustituye a la medición experimental de afinidad, pero sí proporciona una estimación cuantitativa que permite comparar y priorizar moléculas candidatas. En particular, cuando el modelo se entrena con datos consistentes de actividad frente a una proteína determinada, puede captar regularidades estructurales asociadas a la unión ligando-diana y ofrecer una señal útil para guiar la selección de compuestos. 
-
-Los modelos QSAR presentan limitaciones importantes que deben considerarse al interpretar sus predicciones. Su rendimiento depende en gran medida de la calidad, cantidad y diversidad de los datos de entrenamiento, por lo que conjuntos de datos sesgados o con ruido pueden comprometer su fiabilidad. Además, solo son aplicables dentro de su dominio de aplicabilidad, es decir, para moléculas similares a las utilizadas en su desarrollo, perdiendo validez al extrapolar a nuevas estructuras. Asimismo, capturan correlaciones entre estructura y actividad sin modelar explícitamente los mecanismos fisicoquímicos subyacentes, lo que limita su capacidad de generalización. Por último, al basarse habitualmente en una única variable experimental, simplifican la complejidad del fenómeno biológico, ignorando factores como la permeabilidad, la estabilidad metabólica o las condiciones del ensayo, por lo que deben emplearse como herramientas complementarias dentro de un análisis más amplio.
+La principal limitación de los modelos QSAR es su dominio de aplicabilidad. Un modelo puede funcionar razonablemente bien para moléculas similares a las usadas durante su entrenamiento, pero perder fiabilidad al extrapolar hacia regiones químicas alejadas. Por ello, conviene interpretar sus predicciones junto con medidas de similitud estructural, diversidad de scaffolds y controles de novedad. Además, pequeñas diferencias de pIC$_{50}$ predicha no deben sobreinterpretarse como diferencias reales de potencia experimental [\ref{ref:niazi2025}].
 
 \begin{figure}[H]
     \centering
@@ -417,94 +385,77 @@ Los modelos QSAR presentan limitaciones importantes que deben considerarse al in
 
 \subsection{Predicción computacional de propiedades ADMET}
 
-Además de mostrar afinidad frente a una diana terapéutica, un candidato a fármaco debe presentar un perfil adecuado de absorción, distribución, metabolismo, excreción y toxicidad. Estas propiedades, agrupadas bajo el acrónimo ADMET, condicionan de manera decisiva el comportamiento del compuesto en un organismo y representan una de las principales causas de fracaso en fases avanzadas del desarrollo farmacéutico. Como consecuencia, la evaluación temprana de estas dimensiones se ha convertido en un componente esencial dentro de los flujos de diseño molecular asistido por inteligencia artificial.
+Además de la actividad frente a EGFR, una molécula candidata debe presentar un perfil ADMET razonable. La predicción computacional de propiedades ADMET estima, a partir de la estructura química, señales relacionadas con absorción intestinal, biodisponibilidad, distribución, metabolismo, eliminación y toxicidad [\ref{ref:sun2022},\ref{ref:swanson2024}].
 
-La predicción computacional de propiedades ADMET busca estimar, a partir de la estructura química, aspectos como la permeabilidad intestinal, la capacidad de atravesar membranas biológicas, la interacción con transportadores, la estabilidad metabólica, el riesgo de hepatotoxicidad o la posible cardiotoxicidad, entre otros. Estas predicciones permiten descartar de forma temprana compuestos con perfiles desfavorables antes de invertir recursos en síntesis o validación experimental, mejorando así la eficiencia global del proceso de priorización.
-
-A diferencia de la actividad frente a una diana concreta, que suele formularse como una tarea específica de clasificación o regresión, la evaluación ADMET es intrínsecamente multidimensional. Una molécula puede mostrar un comportamiento favorable en ciertas propiedades y desfavorable en otras, lo que obliga a considerar compromisos entre múltiples criterios. Esta naturaleza compleja encaja especialmente bien con enfoques de optimización multiobjetivo, donde el objetivo no es maximizar una única magnitud, sino equilibrar distintos factores relevantes para la viabilidad farmacéutica.
+A diferencia de la actividad frente a una diana, ADMET es un problema multidimensional. Una molécula puede ser favorable en absorción pero desfavorable en toxicidad, o mostrar buen perfil general pero riesgo de interacción con canales hERG. Por tanto, la evaluación ADMET encaja de forma natural con enfoques multiobjetivo, donde el objetivo no es maximizar una única propiedad sino equilibrar riesgos y beneficios [\ref{ref:swanson2024},\ref{ref:angelo2023}].
 
 \subsubsection{Herramientas modernas de predicción ADMET basadas en IA}
 
-El crecimiento de los datos bioquímicos y farmacológicos disponibles ha impulsado el desarrollo de herramientas de predicción ADMET basadas en inteligencia artificial, capaces de estimar múltiples propiedades de forma automatizada y a gran escala.
+ADMET-AI es una plataforma de predicción basada en aprendizaje automático diseñada para evaluar bibliotecas químicas de gran tamaño. Proporciona predicciones para múltiples endpoints y puede utilizarse como herramienta web o mediante ejecución local, lo que facilita su integración en pipelines reproducibles [\ref{ref:swanson2024},\ref{ref:admet_ai_web},\ref{ref:admet_ai_github}].
 
-Entre las principales ventajas de estos sistemas destaca su capacidad para evaluar múltiples \textit{endpoints} simultáneamente. En lugar de analizar cada propiedad de forma aislada mediante procedimientos independientes, muchas herramientas modernas proporcionan una batería integrada de predicciones relacionadas con absorción oral, permeabilidad, distribución tisular, metabolismo mediado por enzimas, eliminación y toxicidad. Esta evaluación conjunta resulta especialmente útil en pipelines generativas, donde es necesario cribar rápidamente grandes conjuntos moleculares y detectar perfiles desfavorables con criterios homogéneos y reproducibles.
-
+En el contexto de este TFM, ADMET-AI es relevante no solo por generar predicciones individuales, sino porque permite construir criterios de filtrado y puntuaciones agregadas. En particular, endpoints como AMES, ClinTox, carcinogenicidad, hERG, biodisponibilidad e HIA pueden utilizarse como señales tempranas para descartar perfiles problemáticos o penalizarlos durante la priorización.
 
 \section{Modelos generativos moleculares}
 
-A diferencia de los enfoques tradicionales centrados en la evaluación de compuestos existentes, los modelos generativos permiten proponer nuevas estructuras químicas explorando regiones del espacio químico no cubiertas por bases de datos experimentales. Estos modelos aprenden distribuciones implícitas sobre representaciones moleculares a partir de grandes colecciones de compuestos, lo que les permite generar nuevas moléculas con características similares a las observadas durante el entrenamiento.
+Los modelos generativos moleculares aprenden patrones a partir de conjuntos de moléculas y los utilizan para proponer nuevas estructuras. A diferencia del cribado virtual clásico, que evalúa moléculas ya existentes en una biblioteca, la generación \textit{de novo} permite explorar regiones no cubiertas explícitamente por el conjunto inicial [\ref{ref:kattuparambil2025},\ref{ref:oliveira2025},\ref{ref:angelo2023}].
 
 \subsection{Generación molecular \textit{de novo}}
 
-La generación molecular \textit{de novo} consiste en diseñar nuevas entidades químicas sin partir directamente de compuestos existentes, sino a partir de patrones aprendidos sobre grandes conjuntos de datos moleculares. Este enfoque permite explorar de forma eficiente el espacio químico, que se estima extremadamente amplio, superando las limitaciones de los métodos tradicionales basados en bibliotecas físicas.
+La generación molecular \textit{de novo} consiste en diseñar nuevas entidades químicas a partir de una distribución aprendida. Formalmente, dado un conjunto de moléculas de entrenamiento $\mathcal{D} = \{x_1, x_2, \dots, x_n\}$, un modelo generativo aprende una distribución $p(x)$ sobre el espacio molecular, de modo que nuevas muestras $\tilde{x} \sim p(x)$ correspondan a estructuras químicamente plausibles.
 
-Formalmente, dado un conjunto de moléculas de entrenamiento $\mathcal{D} = \{x_1, x_2, \dots, x_n\}$, un modelo generativo aprende una distribución $p(x)$ sobre el espacio molecular tal que nuevas muestras $\tilde{x} \sim p(x)$ correspondan a estructuras químicamente válidas y plausibles. Dependiendo de la representación utilizada, estas muestras pueden generarse como secuencias (por ejemplo, SMILES) o como grafos moleculares.
-
-Este paradigma ha permitido pasar de un enfoque de cribado pasivo a uno activo, en el que el modelo no solo evalúa moléculas, sino que también propone candidatos potenciales optimizados según ciertos criterios. En este sentido, el diseño molecular \textit{de novo} puede entenderse como un proceso generativo guiado por conocimiento químico implícito aprendido a partir de datos.
-
-Una de las principales motivaciones de este enfoque es la capacidad de explorar el espacio químico más allá de las bibliotecas tradicionales. Mientras que los conjuntos utilizados en cribado experimental suelen contener entre $10^4$ y $10^8$ moléculas, el espacio químico potencial se estima en más de $10^{60}$ compuestos factibles, lo que hace inviable su exploración exhaustiva mediante métodos clásicos.
+Este planteamiento permite pasar de una exploración pasiva del espacio químico a una generación activa de hipótesis. Sin embargo, generar moléculas válidas no garantiza que sean activas, seguras o desarrollables. Por ello, la generación debe acompañarse de validación química, cálculo de propiedades, evaluación ADMET y selección posterior [\ref{ref:angelo2023},\ref{ref:olivecrona2017}].
 
 \subsection{Modelos generativos modernos}
 
-El desarrollo reciente de modelos de aprendizaje profundo ha impulsado la aparición de nuevas arquitecturas generativas más potentes y flexibles. Entre ellas, los modelos basados en \textbf{Transformers }han demostrado un rendimiento destacado en la generación de moléculas representadas como secuencias SMILES. Inspirados en el procesamiento del lenguaje natural, estos modelos utilizan mecanismos de atención para capturar dependencias globales en la secuencia, permitiendo modelar relaciones entre átomos y enlaces independientemente de su posición en la cadena y mejorando la coherencia sintáctica de las moléculas generadas.
+Existen distintas familias de modelos generativos moleculares. Los modelos secuenciales autoregresivos generan SMILES carácter a carácter o token a token, aprendiendo la sintaxis química como si fuera un lenguaje. En esta familia se sitúan modelos basados en redes recurrentes, como LSTM, que han sido ampliamente utilizados en generación molecular y pueden adaptarse mediante fine-tuning o aprendizaje por refuerzo [\ref{ref:olivecrona2017}].
 
-Paralelamente, los modelos generativos basados en \textbf{grafos} han ganado relevancia al generar directamente estructuras moleculares en forma de grafos.Más recientemente, los \textbf{modelos de difusión} han emergido como una de las aproximaciones más prometedoras. Estos modelos generan moléculas mediante un proceso iterativo de eliminación de ruido, transformando progresivamente una distribución inicial aleatoria en estructuras químicas válidas. Además, han demostrado ser especialmente eficaces en la generación de conformaciones tridimensionales y en el modelado de propiedades invariantes a rotaciones y traslaciones, lo que resulta relevante para la representación espacial de moléculas.
+Más recientemente, los modelos basados en Transformers han ganado relevancia por su capacidad para capturar dependencias globales en secuencias moleculares. También existen modelos basados en grafos, que generan directamente estructuras moleculares como nodos y aristas, y modelos de difusión, especialmente prometedores para generación tridimensional y tareas donde la geometría molecular es importante [\ref{ref:zhang2024},\ref{ref:oliveira2025}].
 
-Asimismo, las \textbf{redes neuronales de grafos} (GNN) han sido ampliamente utilizadas tanto en generación como en predicción molecular, ya que permiten operar directamente sobre la estructura del grafo molecular y modelar interacciones locales entre átomos mediante mecanismos de \textit{message passing}.
+La elección del modelo depende del objetivo del trabajo. En este TFM se utiliza un modelo LSTM preentrenado de la librería MRL, por lo que la generación se formula como un problema de lenguaje molecular sobre SMILES. Esto permite un flujo sencillo y reproducible, aunque no incorpora de forma directa condiciones sobre EGFR, ADMET o geometría 3D.
 
 \subsection{Modelos preentrenados en química molecular}
 
-Una tendencia reciente en el desarrollo de modelos generativos moleculares es el uso de modelos preentrenados. En este enfoque, los modelos se entrenan inicialmente sobre grandes bases de datos químicas, como ZINC, ChEMBL o PubChem, con el objetivo de aprender representaciones generales del espacio molecular sin necesidad de etiquetas explícitas.
+El preentrenamiento molecular consiste en entrenar modelos sobre grandes colecciones químicas, como ZINC, ChEMBL o PubChem, para capturar regularidades generales del espacio molecular [\ref{ref:zhang2024},\ref{ref:zdrazil2024}]. Posteriormente, el modelo puede ajustarse a un dominio específico mediante fine-tuning, reduciendo el coste de entrenamiento y aprovechando conocimiento químico previo.
 
-El uso de aprendizaje auto-supervisado permite a estos modelos capturar la ``gramática'' subyacente de la química, es decir, las regularidades estructurales y sintácticas que definen las moléculas válidas. Posteriormente, estos modelos pueden reutilizarse directamente o adaptarse a tareas específicas mediante técnicas de \textit{fine-tuning}, reduciendo la necesidad de datos etiquetados para nuevas dianas.
-
-Ejemplos de este enfoque incluyen modelos tipo GPT como \textbf{TamGen}, entrenado sobre millones de cadenas SMILES, o modelos de fundación como \textbf{ChemBERTa} y \textbf{MegaMolBART}, que pueden adaptarse a múltiples tareas dentro del descubrimiento de fármacos, desde la predicción de propiedades hasta la generación y optimización molecular.
-
-El preentrenamiento permite mejorar la capacidad de generalización del modelo, reducir el coste computacional asociado al entrenamiento desde cero y facilitar la transferencia de conocimiento entre distintos problemas.
+En este trabajo, esta lógica se aplica mediante el uso de un modelo generativo molecular preentrenado de MRL, ajustado sobre moléculas activas frente a EGFR [\ref{ref:mrl_docs},\ref{ref:mrl_tutorial_affinity}]. Es importante subrayar que el modelo empleado no es condicional: no recibe como entrada una proteína, una actividad deseada ni un vector de propiedades. Por ello, la optimización no ocurre durante la generación, sino después, mediante scoring, filtros y selección multiobjetivo.
 
 \section{Optimización multiobjetivo en diseño molecular}
 
-El diseño de moléculas con potencial terapéutico constituye un problema intrínsecamente multiobjetivo, en el que deben considerarse simultáneamente múltiples propiedades relevantes y, en muchos casos, conflictivas. A diferencia de otros problemas de optimización donde existe una única función objetivo claramente definida, en el descubrimiento de fármacos es necesario equilibrar criterios como la afinidad frente a una diana, las propiedades farmacocinéticas, la toxicidad y la viabilidad sintética.
+El diseño molecular es un problema multiobjetivo porque una molécula debe equilibrar actividad, propiedades fisicoquímicas, ADMET, novedad y plausibilidad química. Optimizar una sola dimensión puede producir candidatos desequilibrados: moléculas muy activas pero tóxicas, muy novedosas pero fuera del dominio del modelo, o muy drug-like pero poco relevantes para la diana [\ref{ref:angelo2023},\ref{ref:deb2002}].
 
-\subsection{Naturaleza multiobjetivo del descubrimiento de fármacos}
+Las propiedades relevantes de una molécula no siempre están alineadas. Por ejemplo, aumentar la afinidad puede ir acompañado de mayor lipofilicidad, lo que puede empeorar solubilidad o toxicidad. Del mismo modo, estructuras complejas pueden presentar actividad favorable pero ser difíciles de sintetizar [\ref{ref:angelo2023},\ref{ref:ertl2009}].
 
-El proceso de descubrimiento de fármacos implica la optimización simultánea de múltiples propiedades que no siempre están alineadas entre sí. Por ejemplo, aumentar la afinidad frente a una diana terapéutica puede implicar un incremento de la lipofilicidad, lo que a su vez puede afectar negativamente a la solubilidad o incrementar el riesgo de toxicidad. De manera similar, moléculas altamente complejas pueden mostrar una elevada actividad biológica, pero resultar difíciles o costosas de sintetizar.
-
-Este tipo de relaciones introduce tensiones inherentes entre objetivos, lo que impide definir una solución óptima única en sentido clásico. En su lugar, el problema debe abordarse como un conjunto de objetivos:
+Este tipo de relaciones introduce tensiones entre objetivos, que pueden representarse de forma general como:
 
 \begin{equation}
 \max \; f_1(x), \quad \max \; f_2(x), \quad \dots, \quad \min \; f_k(x)
 \end{equation}
 
-donde cada función $f_i(x)$ representa una propiedad relevante del compuesto $x$, como la afinidad estimada, el índice de \textit{drug-likeness} (QED) o la accesibilidad sintética (SAS).
-
-En este marco, el objetivo no es encontrar una única solución óptima, sino un conjunto de soluciones que representen los mejores compromisos posibles entre los distintos criterios. 
+donde cada función $f_i(x)$ representa una propiedad relevante del compuesto $x$. En este marco, no se busca necesariamente una única molécula óptima, sino un conjunto de soluciones que representen compromisos razonables entre criterios [\ref{ref:angelo2023},\ref{ref:deb2002}].
 
 \subsection{Estrategias de optimización molecular}
 
-Diversas estrategias han sido propuestas para abordar la optimización de propiedades moleculares en el contexto de la generación \textit{de novo}. Una de las aproximaciones más comunes consiste en combinar múltiples objetivos en una única función escalar mediante \textbf{ponderaciones}:
+Una estrategia habitual consiste en combinar múltiples objetivos mediante una función escalar ponderada:
 
 \begin{equation}
 F(x) = \sum_{i=1}^{k} w_i f_i(x)
 \end{equation}
 
-donde $w_i$ representa el peso asignado a cada objetivo. Aunque este enfoque es sencillo de implementar, presenta limitaciones importantes, ya que requiere definir a priori la importancia relativa de cada criterio y puede ocultar la estructura real de compromisos entre objetivos.
+donde $w_i$ representa el peso asignado a cada objetivo. Este enfoque es fácil de interpretar, pero obliga a decidir de antemano cuánto pesa cada propiedad y puede ocultar soluciones interesantes que destacan en un objetivo concreto [\ref{ref:angelo2023}].
 
-Otra estrategia ampliamente utilizada es el aprendizaje por refuerzo, en el que el modelo generativo se optimiza mediante una \textbf{función de recompensa} que combina distintas propiedades. Este enfoque ha demostrado ser eficaz en ciertos escenarios, pero también tiende a reducir el problema multiobjetivo a una señal escalar, lo que puede dificultar la exploración de soluciones diversas.
+Otra estrategia consiste en modificar directamente el proceso generativo mediante aprendizaje por refuerzo o modelos condicionados. En estos casos, el generador aprende a producir moléculas que maximizan una función de recompensa. Aunque este enfoque puede ser potente, también puede reducir diversidad o favorecer soluciones que explotan debilidades de la función objetivo si no se controla adecuadamente [\ref{ref:olivecrona2017},\ref{ref:angelo2023}].
 
-Asimismo, los algoritmos evolutivos han sido aplicados al diseño molecular, utilizando operadores de mutación y selección para evolucionar poblaciones de moléculas a lo largo de múltiples generaciones. Estos métodos permiten mantener diversidad en las soluciones, pero pueden resultar costosos computacionalmente y difíciles de integrar con modelos generativos complejos.
+El presente trabajo adopta una estrategia más modular: primero genera moléculas con un modelo no condicional y después las evalúa mediante una fase de scoring y selección. Esta separación facilita auditar cada criterio por separado y evita que el comportamiento del generador quede mezclado con las decisiones de priorización.
 
 \subsection{Dominancia de Pareto y soluciones no dominadas}
 
-La optimización multiobjetivo puede abordarse de forma natural mediante el concepto de dominancia de Pareto. A diferencia de los problemas con un único objetivo, en este contexto no existe una única solución óptima, sino un conjunto de soluciones que representan distintos equilibrios entre los objetivos considerados.
-
-Formalmente, una solución $x_1$ domina a otra solución $x_2$ si es al menos tan buena en todos los objetivos y estrictamente mejor en al menos uno de ellos:
+La dominancia de Pareto permite seleccionar soluciones competitivas sin reducir todos los objetivos a una única puntuación. Una solución $x_1$ domina a otra solución $x_2$ si es al menos tan buena en todos los objetivos y estrictamente mejor en al menos uno:
 
 \begin{equation}
 x_1 \prec x_2 \iff \forall i, \; f_i(x_1) \geq f_i(x_2) \;\; \text{y} \;\; \exists j \; \text{tal que} \; f_j(x_1) > f_j(x_2)
 \end{equation}
 
-El conjunto de soluciones que no son dominadas por ninguna otra se denomina conjunto de Pareto, y su proyección en el espacio de objetivos define el frente de Pareto. Las soluciones que pertenecen a este frente se denominan soluciones no dominadas. En ellas, no es posible mejorar un objetivo sin empeorar al menos uno de los otros.
+El conjunto de soluciones no dominadas constituye el frente de Pareto. En estas soluciones no es posible mejorar un objetivo sin empeorar al menos otro, por lo que representan compromisos útiles para la toma de decisiones [\ref{ref:deb2002},\ref{ref:angelo2023}].
 
 \begin{figure}[h]
     \centering
@@ -513,43 +464,37 @@ El conjunto de soluciones que no son dominadas por ninguna otra se denomina conj
     \label{fig:pareto}
 \end{figure}
 
-
-El concepto de óptimo de Pareto puede entenderse de forma intuitiva mediante su representación gráfica. En la Figura~\ref{fig:pareto}, la solución $a$ pertenece al conjunto de soluciones no dominadas, ya que no existe otra solución que mejore simultáneamente todos sus objetivos. En otras palabras, cualquier mejora en uno de los objetivos implicaría necesariamente un empeoramiento en al menos otro.
-
-Por el contrario, la solución $c$ es una solución dominada, ya que existen otras soluciones, como $a$ o $b$, que presentan un mejor comportamiento en los objetivos considerados. En este sentido, las soluciones dominadas pueden descartarse en el proceso de selección, mientras que las soluciones no dominadas constituyen el conjunto de candidatos óptimos bajo el criterio de Pareto.
+En la Figura~\ref{fig:pareto}, las soluciones situadas en el frente no dominado representan alternativas con distintos equilibrios entre objetivos. Las soluciones dominadas, en cambio, pueden descartarse porque existe al menos otra alternativa igual o mejor en todos los criterios considerados.
 
 \subsection{Métricas de evaluación multiobjetivo}
 
-Una vez definido el concepto de frente de Pareto, es necesario contar con herramientas que permitan evaluar la calidad de un conjunto de soluciones. En el contexto del diseño molecular, esto implica medir no solo si las moléculas son buenas individualmente, sino también si el conjunto cubre adecuadamente distintos compromisos entre propiedades.
+Además de identificar soluciones no dominadas, existen métricas para evaluar la calidad global de un frente de Pareto. El hipervolumen mide el volumen del espacio de objetivos dominado por el conjunto de soluciones respecto a un punto de referencia, mientras que la dispersión o \textit{spread} evalúa cómo se distribuyen las soluciones a lo largo del frente [\ref{ref:angelo2023},\ref{ref:deb2002}].
+
+En este trabajo estas métricas se consideran como contexto metodológico, pero no se utilizan como criterio principal de selección. La selección se basa en dominancia de Pareto y, posteriormente, en una puntuación ponderada auxiliar para ordenar soluciones no dominadas. Esta decisión mantiene la interpretación multiobjetivo sin renunciar a una herramienta práctica de ranking.
 
 \subsubsection{Hipervolumen (\textit{Hypervolume})}
 
-Una de las métricas más utilizadas es el hipervolumen (\textit{hypervolume}, HV). Esta mide el volumen del espacio de objetivos que es dominado por el conjunto de soluciones respecto a un punto de referencia $z$ (generalmente elegido como un punto peor que todas las soluciones).
-
-De forma simplificada, el hipervolumen puede entenderse como el área (en 2D) o volumen (en dimensiones superiores) cubierto por las soluciones no dominadas.
-
-Por ejemplo, si tenemos dos objetivos (maximizar afinidad y maximizar QED), cada molécula define un punto en un plano. El hipervolumen mide cuánto espacio \textit{bueno}  cubren esas moléculas. Cuanto mayor sea este valor, mejor será el conjunto, ya que implica que se han encontrado soluciones que cubren una región más amplia y favorable.
+El hipervolumen cuantifica cuánto espacio favorable cubre un conjunto de soluciones no dominadas respecto a un punto de referencia. En diseño molecular puede ser útil para comparar algoritmos generativos, aunque requiere definir cuidadosamente los objetivos, escalas y punto de referencia.
 
 \subsubsection{Dispersión (\textit{Spread})}
 
-Otra métrica importante es la dispersión o \textit{spread}, que mide cómo se distribuyen las soluciones a lo largo del frente de Pareto.
-  
-Imaginemos que todas las moléculas generadas tienen valores muy similares de afinidad y QED. Aunque sean buenas, el conjunto no es diverso. En cambio, si algunas priorizan afinidad y otras priorizan QED, se obtiene una mejor cobertura del espacio.
-
+La dispersión mide si las soluciones se concentran en una zona concreta del frente o si cubren distintos compromisos. En una shortlist molecular, una mayor diversidad de perfiles puede ser útil porque evita seleccionar únicamente moléculas muy parecidas entre sí.
 
 \subsubsection{Número de soluciones no dominadas}
 
-Una medida sencilla pero útil es el número de soluciones no dominadas, es decir, el tamaño del frente de Pareto. Si tras generar 1000 moléculas solo 3 son no dominadas, el modelo está produciendo pocas soluciones competitivas. Si hay 50, entonces el modelo está explorando mejor el espacio.
+El número de soluciones no dominadas ofrece una medida simple del tamaño del frente de Pareto. No obstante, un frente grande no implica necesariamente mejor calidad: también debe evaluarse si las soluciones son interpretables, diversas y químicamente plausibles.
 
 \subsubsection{Funciones agregadas (DScore)}
 
-En algunos enfoques se combinan varios objetivos en una única función escalar:
+Algunos enfoques combinan objetivos en una puntuación agregada:
 
 \begin{equation}
 D(x) = \sum_{i=1}^{k} w_i f_i(x)
 \end{equation}
 
-donde $w_i$ son pesos asignados a cada objetivo. Sin embargo, este enfoque tiene una limitación importante: requiere decidir cuánto pesa cada objetivo, lo que introduce arbitrariedad.
+Este tipo de función facilita ordenar moléculas, pero introduce arbitrariedad en los pesos. Por ello, en este trabajo se utiliza solo como apoyo interpretativo tras aplicar criterios mínimos de elegibilidad y selección por Pareto.
+
+
 
 
 \chapter{Materiales y métodos}
@@ -598,11 +543,11 @@ El desarrollo se realizó en Python, utilizando notebooks de Jupyter como entorn
 Las principales librerías empleadas fueron:
 
 \begin{itemize}
-    \item \textbf{RDKit}: validación y canonicalización de SMILES, cálculo de descriptores fisicoquímicos, fingerprints Morgan, coeficientes de Tanimoto y scaffolds de Murcko.
-    \item \textbf{MRL}: carga del modelo molecular generativo preentrenado y fine-tuning supervisado sobre SMILES activos frente a EGFR.
+    \item \textbf{RDKit}: validación y canonicalización de SMILES, cálculo de descriptores fisicoquímicos, fingerprints Morgan, coeficientes de Tanimoto y scaffolds de Murcko [\ref{ref:rdkit},\ref{ref:bemis1996}].
+    \item \textbf{MRL}: carga del modelo molecular generativo preentrenado y fine-tuning supervisado sobre SMILES activos frente a EGFR [\ref{ref:mrl_docs},\ref{ref:mrl_tutorial_affinity}].
     \item \textbf{PyTorch}: backend de entrenamiento del modelo generativo.
-    \item \textbf{scikit-learn}: entrenamiento del modelo QSAR basado en Random Forest y cálculo de métricas de regresión.
-    \item \textbf{ADMET-AI}: predicción de propiedades farmacocinéticas y toxicológicas de las moléculas generadas [3].
+    \item \textbf{scikit-learn}: entrenamiento del modelo QSAR basado en Random Forest y cálculo de métricas de regresión [\ref{ref:pedregosa2011}].
+    \item \textbf{ADMET-AI}: predicción de propiedades farmacocinéticas y toxicológicas de las moléculas generadas [\ref{ref:swanson2024}].
     \item \textbf{pandas, numpy y matplotlib}: manipulación de datos, análisis numérico y visualización.
 \end{itemize}
 
@@ -612,7 +557,7 @@ Para garantizar reproducibilidad, se fijó una semilla común de aleatoriedad ig
 
 \subsection{Datos de entrada y exportación desde ChEMBL}
 
-La primera etapa del trabajo consistió en construir un dataset de bioactividad específico para EGFR a partir de datos experimentales procedentes de ChEMBL. La descarga se realizó directamente desde el explorador de actividades de ChEMBL, disponible en:
+La primera etapa del trabajo consistió en construir un dataset de bioactividad específico para EGFR a partir de datos experimentales procedentes de ChEMBL [\ref{ref:zdrazil2024}]. La descarga se realizó directamente desde el explorador de actividades de ChEMBL, disponible en:
 
 \vspace{0.1cm}
 \begin{center}
@@ -695,23 +640,14 @@ El objetivo del fine-tuning no fue maximizar agresivamente la adaptación al dat
         \textbf{Parámetro} & \textbf{Valor utilizado} \\
         \hline
         Modelo preentrenado & \texttt{LSTM\_LM\_Small\_ZINC\_NC} \\
-        \hline
         Semilla & 42 \\
-        \hline
         \textit{Drop scale} & 0,30 \\
-        \hline
         \textit{Learning rate} & $5 \cdot 10^{-5}$ \\
-        \hline
         Tamaño de batch de fine-tuning & 32 \\
-        \hline
         Número máximo de epochs & 8 \\
-        \hline
         Muestra de control por epoch & 4.000 SMILES \\
-        \hline
         Muestra final generada & 10.000 SMILES brutos \\
-        \hline
         Longitud máxima en generación final & 120 caracteres \\
-        \hline
         Exclusión de coincidencias exactas con entrenamiento & Sí \\
         \hline
     \end{tabular}
@@ -762,21 +698,13 @@ El filtro químico básico se diseñó como una barrera inicial de plausibilidad
         \textbf{Criterio} & \textbf{Rango o umbral} \\
         \hline
         Peso molecular & 180--650 Da \\
-        \hline
         RDKit LogP & -1--6,5 \\
-        \hline
         TPSA & 20--160 \\
-        \hline
         Donadores de H & $\leq 5$ \\
-        \hline
         Aceptores de H & $\leq 12$ \\
-        \hline
         Enlaces rotables & $\leq 12$ \\
-        \hline
         Átomos pesados & 10--70 \\
-        \hline
         Violaciones Lipinski & $\leq 2$ \\
-        \hline
         QED & $\geq 0,25$ \\
         \hline
     \end{tabular}
@@ -790,7 +718,7 @@ Tras este filtrado, 8.241 de las 9.068 moléculas generadas fueron conservadas, 
 
 \section{Modelo QSAR para estimación de actividad frente a EGFR}
 
-Para aproximar la actividad frente a EGFR se entrenó un modelo QSAR de regresión sobre el dataset canónico de referencia. Cada molécula se representó mediante fingerprints Morgan con radio 2 y 2.048 bits.
+Para aproximar la actividad frente a EGFR se entrenó un modelo QSAR de regresión sobre el dataset canónico de referencia. Cada molécula se representó mediante fingerprints Morgan con radio 2 y 2.048 bits [\ref{ref:rogers2010}].
 
 \subsection{Partición por scaffold}
 
@@ -806,7 +734,7 @@ El conjunto de referencia quedó dividido en:
 
 \subsection{Modelo predictivo y métricas}
 
-Se entrenó un \textit{Random Forest Regressor} con 500 árboles, \texttt{max\_features = sqrt}, \texttt{min\_samples\_leaf = 2}, paralelización mediante \texttt{n\_jobs = -1} y semilla 42.
+Se entrenó un \textit{Random Forest Regressor} [\ref{ref:breiman2001}] con 500 árboles, \texttt{max\_features = sqrt}, \texttt{min\_samples\_leaf = 2}, paralelización mediante \texttt{n\_jobs = -1} y semilla 42.
 
 La elección de Random Forest se justifica por tres razones. Primero, proporciona un baseline robusto para fingerprints moleculares sin requerir una red neuronal adicional. Segundo, puede capturar relaciones no lineales entre subestructuras y actividad. Tercero, es suficientemente interpretable desde el punto de vista metodológico para una pipeline cuyo objetivo principal es la integración y priorización multiobjetivo, no la optimización exhaustiva del modelo QSAR.
 
@@ -818,7 +746,6 @@ La elección de Random Forest se justifica por tres razones. Primero, proporcion
         \textbf{Conjunto} & \textbf{MAE} & \textbf{RMSE} & \textbf{$R^2$} & \textbf{Spearman} \\
         \hline
         Validación & 0,648 & 0,830 & 0,584 & 0,773 \\
-        \hline
         Test & 0,649 & 0,833 & 0,605 & 0,798 \\
         \hline
     \end{tabular}
@@ -847,7 +774,7 @@ Para el scoring posterior se definió una ventana deseable de similitud entre 0,
 
 \section{Integración de predicciones ADMET-AI}
 
-Las moléculas filtradas se evaluaron con ADMET-AI para estimar propiedades farmacocinéticas y toxicológicas relevantes [3]. Se preparó un archivo de entrada con 8.241 SMILES únicos y se ejecutaron las predicciones por lotes de 1.000 moléculas. Posteriormente, las predicciones se integraron con el dataframe principal mediante SMILES canónico.
+Las moléculas filtradas se evaluaron con ADMET-AI para estimar propiedades farmacocinéticas y toxicológicas relevantes [\ref{ref:swanson2024}]. Se preparó un archivo de entrada con 8.241 SMILES únicos y se ejecutaron las predicciones por lotes de 1.000 moléculas. Posteriormente, las predicciones se integraron con el dataframe principal mediante SMILES canónico.
 
 Dado que ADMET-AI devuelve numerosas columnas, se separaron dos tipos de señal:
 
@@ -870,21 +797,14 @@ Se definieron reglas estrictas para alertas estructurales, toxicidad y absorció
         \textbf{Variable ADMET} & \textbf{Criterio de aceptación} \\
         \hline
         \texttt{PAINS\_alert} & $= 0$ \\
-        \hline
         \texttt{NIH\_alert} & $= 0$ \\
-        \hline
         \texttt{BRENK\_alert} & $\leq 1$ \\
-        \hline
         \texttt{AMES} & $\leq 0,5$ \\
-        \hline
         \texttt{ClinTox} & $\leq 0,5$ \\
-        \hline
         \texttt{Carcinogens\_Lagunin} & $\leq 0,5$ \\
-        \hline
         \texttt{hERG} & $\leq 0,5$ \\
-        \hline
         \texttt{Bioavailability\_Ma} & $\geq 0,5$ \\
-        \hline
+ 
         \texttt{HIA\_Hou} & $\geq 0,5$ \\
         \hline
     \end{tabular}
@@ -931,15 +851,15 @@ Donde $s_i(x)$ representa cada componente normalizado y $w_i$ su peso correspond
         \textbf{Componente} & \textbf{Peso} & \textbf{Justificación} \\
         \hline
         Actividad predicha & 0,30 & La inhibición de EGFR es el objetivo principal del proyecto. \\
-        \hline
+       
         ADMET blando & 0,20 & Evita priorizar moléculas con perfil farmacocinético desfavorable. \\
-        \hline
+      
         ADMET duro & 0,10 & Penaliza riesgos críticos de toxicidad, alertas o baja absorción. \\
-        \hline
+     
         Similitud al training & 0,15 & Equilibra novedad estructural y dominio de aplicabilidad del modelo QSAR. \\
-        \hline
+ 
         QED & 0,15 & Representa calidad molecular global tipo \textit{drug-like}. \\
-        \hline
+  
         Regla de Lipinski & 0,10 & Controla propiedades fisicoquímicas básicas. \\
         \hline
     \end{tabular}
@@ -947,7 +867,7 @@ Donde $s_i(x)$ representa cada componente normalizado y $w_i$ su peso correspond
     \label{tab:pesos_reward}
 \end{table}
 
-El \texttt{reward\_score} no se utilizó como único criterio de selección, sino como herramienta auxiliar de ordenación dentro del conjunto de soluciones no dominadas. Esta diferencia es importante: una suma ponderada puede introducir arbitrariedad, mientras que Pareto permite conservar soluciones con distintos compromisos entre objetivos [4].
+El \texttt{reward\_score} no se utilizó como único criterio de selección, sino como herramienta auxiliar de ordenación dentro del conjunto de soluciones no dominadas. Esta diferencia es importante: una suma ponderada puede introducir arbitrariedad, mientras que Pareto permite conservar soluciones con distintos compromisos entre objetivos [\ref{ref:angelo2023}].
 
 \section{Pool elegible y selección mediante Pareto}
 
@@ -1015,22 +935,22 @@ La pipeline exportó todos los resultados de manera estructurada para facilitar 
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{p{7cm} p{3cm}}
+    \begin{tabular}{p{7cm} p{5cm}}
         \hline
         \textbf{Etapa} & \textbf{Número de moléculas} \\
         \hline
         Moléculas generadas válidas y únicas & 9.068 \\
-        \hline
+       
         Moléculas tras filtro químico básico & 8.241 \\
-        \hline
+      
         Moléculas con scoring completo & 8.241 \\
-        \hline
+      
         Moléculas elegibles & 2.133 \\
-        \hline
+        
         Moléculas del frente de Pareto & 37 \\
-        \hline
+       
         Shortlist final & 30 \\
-        \hline
+       \hline
     \end{tabular}
     \caption{Reducción progresiva del conjunto molecular durante la pipeline.}
     \label{tab:reduccion_pipeline}
@@ -1401,215 +1321,373 @@ La Tabla~\ref{tab:riesgos_shortlist_resultados} resume los resultados. De las 30
 
 \section{Conclusiones}
 
-El objetivo principal de este Trabajo Final de Máster era diseñar, implementar y evaluar una \textit{pipeline} computacional de inteligencia artificial generativa para la generación y priorización multiobjetivo de moléculas \textit{drug-like} en el contexto de EGFR. A partir de los resultados obtenidos, se puede concluir que este objetivo se ha cumplido. El trabajo ha permitido construir un flujo completo que integra preprocesado de datos de bioactividad, ajuste de un modelo generativo molecular preentrenado, generación de nuevas estructuras SMILES, cálculo de descriptores fisicoquímicos, estimación de actividad mediante un modelo QSAR, evaluación ADMET, control de similitud estructural y selección final mediante dominancia de Pareto.
+Este Trabajo Final de Máster ha permitido comprobar que una \textit{pipeline} computacional modular puede transformar una muestra amplia de moléculas generadas en una cartera reducida de hipótesis moleculares priorizadas frente a EGFR. La principal aportación del trabajo no es proponer una molécula concreta como inhibidor validado, sino construir un flujo reproducible capaz de generar, filtrar, ordenar e interpretar moléculas bajo criterios explícitos de actividad predicha, calidad molecular, perfil ADMET, novedad estructural y diversidad química.
 
-La principal conclusión del trabajo es que la generación molecular por sí sola no es suficiente para obtener candidatas defendibles. El modelo generativo fue capaz de producir un conjunto amplio de moléculas válidas, únicas y no presentes exactamente en el conjunto de entrenamiento, pero el valor real del proyecto aparece en las etapas posteriores de evaluación y priorización. A partir de 10.000 SMILES brutos generados, se obtuvieron 9.082 SMILES válidos según RDKit, 9.079 moléculas válidas únicas y 9.068 moléculas válidas, únicas y nuevas respecto al conjunto de entrenamiento. Sin embargo, la shortlist final no procede directamente de estas moléculas generadas, sino de una reducción progresiva basada en criterios explícitos: 8.241 moléculas superaron el filtro fisicoquímico básico, 2.133 fueron consideradas elegibles, 37 formaron parte del frente de Pareto y finalmente se seleccionaron 30 candidatas. Esta reducción demuestra que la \textit{pipeline} funciona como un sistema de cribado y priorización, no como una simple herramienta de generación.
+La primera conclusión relevante es que la generación molecular, por sí sola, no basta para obtener candidatas defendibles. El modelo generativo produjo 10.000 SMILES brutos, de los cuales se obtuvieron 9.068 moléculas válidas, únicas y no presentes exactamente en el conjunto de entrenamiento. Sin embargo, tras aplicar el filtro fisicoquímico, los criterios de elegibilidad, la selección por dominancia de Pareto y el control final de diversidad, el conjunto quedó reducido a 30 candidatas. Esta reducción progresiva muestra que el valor del enfoque no reside únicamente en generar muchas moléculas, sino en disponer de una estrategia posterior capaz de descartar, priorizar y justificar qué moléculas merecen análisis adicional.
 
-El preprocesado del dataset de bioactividad frente a EGFR fue una etapa fundamental para dar solidez al resto del flujo. El dataset bruto inicial contenía 25.758 registros y 48 columnas procedentes de ChEMBL. A partir de este conjunto se construyó además un dataset mínimo de 8.553 SMILES activos para el ajuste del modelo generativo. Esta separación entre dataset completo de modelado y dataset mínimo de \textit{fine-tuning} fue una decisión metodológica acertada, ya que evitó mezclar información experimental no necesaria en el entrenamiento del generador y mantuvo trazabilidad entre etapas.
+El modelo QSAR resultó útil como herramienta de priorización relativa, pero no debe interpretarse como una medida experimental de actividad. En el conjunto de prueba obtuvo una correlación de Spearman de 0,798, lo que indica una capacidad razonable para ordenar moléculas según actividad predicha. No obstante, el MAE de 0,649 unidades de pIC$_{50}$ impide tratar diferencias pequeñas entre candidatas como diferencias reales de potencia biológica. Por tanto, la pIC$_{50}$ predicha se ha utilizado correctamente como señal \textit{proxy}, combinándola con ADMET, QED, reglas de Lipinski y similitud estructural.
 
-El ajuste del modelo generativo MRL permitió desplazar la distribución generativa hacia un espacio químico relacionado con moléculas activas frente a EGFR sin colapsar completamente la diversidad.. La elección de la epoch 3, por tanto, fue razonable porque evitó tanto una adaptación demasiado superficial como una degradación progresiva de validez y novedad observada en epochs posteriores.
+El conjunto final de 30 candidatas presenta señales computacionales favorables, pero heterogéneas. La selección conserva diversidad estructural, con 29 scaffolds de Murcko distintos para 30 moléculas, lo que indica que el proceso no colapsó hacia una única familia química. Este resultado es importante en una etapa temprana de descubrimiento, ya que permite mantener alternativas con perfiles distintos en lugar de seleccionar únicamente análogos muy próximos entre sí.
 
-Desde el punto de vista fisicoquímico, el modelo generativo produjo una proporción elevada de moléculas razonables para una exploración temprana de pequeñas moléculas tipo fármaco. 
+La lectura por perfiles resulta más honesta que declarar una única molécula ganadora. C05 representa el mejor compromiso global con hERG favorable; C06 es la opción más conservadora desde el punto de vista ADMET; C07 muestra la mayor actividad predicha, pero concentra riesgos relevantes; C23 aporta novedad estructural frente a inhibidores EGFR conocidos; y C26 destaca por calidad molecular tipo fármaco, aunque queda penalizada por alertas de seguridad. Esta interpretación confirma que la selección final debe entenderse como una cartera de hipótesis moleculares, no como un ranking lineal de mejores compuestos.
 
-El modelo QSAR entrenado para estimar pIC$_{50}$ frente a EGFR ofreció un rendimiento útil para ranking relativo, aunque no suficiente para interpretar sus predicciones como valores absolutos de actividad. Por ello, la decisión de utilizar la pIC$_{50}$ predicha como señal \textit{proxy}, y no como evidencia experimental de inhibición, fue metodológicamente correcta.
+También se confirma una limitación crítica: las candidatas no están libres de riesgo. De las 30 moléculas finales, 21 presentan al menos una señal de riesgo bajo los criterios definidos y 18 no superan el criterio asociado a hERG. Este resultado es especialmente relevante porque evita una interpretación excesivamente optimista. El flujo computacional creado permite priorizar moléculas prometedoras, pero también evidencia qué candidatas requieren revisión adicional antes de plantear validaciones más costosas.
 
-Por tanto, el cuello de botella real no es generar actividad \textit{proxy}, sino seleccionar moléculas equilibradas.
 
-El análisis de similitud estructural fue esencial para evitar dos errores opuestos: seleccionar copias triviales del conjunto de entrenamiento o priorizar moléculas tan alejadas que el modelo QSAR estuviera extrapolando fuera de su dominio aproximado de aplicabilidad. 
+La Tabla~\ref{tab:perfil_c05}--\ref{tab:perfil_c26} resume los perfiles más representativos del conjunto final de candidatas. En cada caso se incluye una lectura práctica sobre cómo debería continuarse el análisis, evitando interpretar estas moléculas como candidatas farmacológicas validadas.
 
-La integración de ADMET-AI añadió una capa crítica al proceso de priorización. 
+\begin{samepage}
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{p{1cm} p{3cm} Y p{4cm}}
+        \hline
+        \textbf{ID} & \textbf{Perfil} & \textbf{SMILES} & \textbf{Datos clave} \\
+        \hline
+        C05 &
+        Equilibrada con hERG favorable &
+        \texttt{\seqsplit{C=CC(=O)Nc1cc(Nc2ncc(C)cn2)c(OC)cc1N1CCOCC1}} &
+        pIC$_{50}$ = 7,183; QED = 0,756; hERG favorable; fallo NIH. \\
+        \hline
+    \end{tabularx}
+    \caption{Resumen del perfil molecular de la candidata C05.}
+    \label{tab:perfil_c05}
+\end{table}
 
-La selección mediante dominancia de Pareto fue una de las decisiones metodológicas más defendibles del proyecto. En lugar de reducir el problema a una única suma ponderada, Pareto permitió conservar moléculas que representaban distintos compromisos entre actividad predicha, ADMET, similitud al dominio de entrenamiento, QED y cumplimiento de reglas fisicoquímicas. De las 2.133 moléculas elegibles, 37 fueron identificadas como no dominadas. Posteriormente, el uso de \texttt{reward\_score} como criterio auxiliar de ordenación y el control de diversidad por scaffold permitieron obtener una shortlist final de 30 candidatas. Esta estrategia evita una lectura simplista del ranking: la mejor molécula no es necesariamente la de mayor pIC$_{50}$ predicha, sino aquella que ofrece un compromiso razonable entre varios objetivos relevantes.
+\noindent\textbf{Siguiente paso recomendado.}
+Mantener como candidata prioritaria, pero no avanzar hacia validación sin revisar previamente la alerta NIH. El siguiente paso sería aplicar \textit{docking} estructural frente a EGFR y diseñar análogos que conserven el perfil global reduciendo la alerta detectada.
+\end{samepage}
 
-El conjunto final de 30 candidatas presenta un perfil global favorable desde el punto de vista de actividad \textit{proxy} y calidad molecular. 
+\vspace{0.35cm}
 
-No obstante, el resultado más importante desde una lectura crítica es que la shortlist final no está libre de riesgos. De las 30 candidatas, 21 presentan al menos una señal de riesgo bajo los criterios definidos, mientras que solo 9 no presentan señales críticas. El principal problema es hERG: únicamente 12 de las 30 candidatas superan este criterio, mientras que 18 no lo superan. Además, 9 candidatas presentan fallos ADMET generales excluyendo hERG. Este resultado impide vender la shortlist como un conjunto de moléculas “seguras” o directamente trasladables a validación experimental sin priorización adicional. La \textit{pipeline} genera hipótesis moleculares interesantes, pero también revela de forma explícita los riesgos que deben condicionar cualquier paso posterior.
+\begin{samepage}
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{p{1cm} p{3cm} Y p{4cm}}
+        \hline
+        \textbf{ID} & \textbf{Perfil} & \textbf{SMILES} & \textbf{Datos clave} \\
+        \hline
+        C06 &
+        Perfil ADMET más conservador &
+        \texttt{\seqsplit{CC(C)n1cnc2ncnc(Nc3cccc(CO)c3)c21}} &
+        pIC$_{50}$ = 6,852; QED = 0,770; hERG favorable; sin señales críticas. \\
+        \hline
+    \end{tabularx}
+    \caption{Resumen del perfil molecular de la candidata C06.}
+    \label{tab:perfil_c06}
+\end{table}
 
-El análisis de criterios ADMET individuales refuerza esta interpretación. En la shortlist final, BRENK, carcinogenicidad, biodisponibilidad oral y absorción intestinal fueron superados por las 30 candidatas. PAINS fue superado por 29 de 30 candidatas, ClinTox por 28 de 30, NIH por 27 de 30 y AMES por 27 de 30. En cambio, hERG solo fue superado por 12 de 30. Esto convierte hERG en el principal cuello de botella toxicológico computacional del trabajo. En términos prácticos, cualquier priorización posterior debería tratar hERG como criterio de descarte o, como mínimo, como alerta central de riesgo, especialmente en candidatas con alta actividad predicha pero mal perfil cardiotóxico computacional.
+\noindent\textbf{Siguiente paso recomendado.}
+Tratarla como la opción más defendible para una priorización prudente. Debería pasar a \textit{docking}, análisis de sintetizabilidad y contraste ADMET con herramientas alternativas. Si mantiene una interacción estructural plausible con EGFR, sería una de las candidatas más razonables para plantear una evaluación \textit{in vitro}.
+\end{samepage}
 
-La diversidad estructural de la shortlist final es uno de los resultados más sólidos del trabajo. Las 30 candidatas contienen 29 scaffolds de Murcko distintos, lo que supone un ratio scaffold/molécula de 0,97. Esto indica que la selección final no colapsó en una única familia química ni en pequeñas variaciones de un mismo núcleo estructural. 
+\vspace{0.35cm}
 
-El análisis de perfiles interpretativos confirma que la shortlist no debe entenderse como una clasificación lineal. C05 representa el perfil más equilibrado con hERG favorable: combina actividad alta, pIC$_{50}$ predicha de 7,183, \texttt{reward\_score} de 0,757, QED de 0,756, ausencia de violaciones de Lipinski y similitud moderada frente a inhibidores EGFR aprobados, aunque presenta fallo en NIH. C06 representa el perfil más conservador desde ADMET: pIC$_{50}$ predicha de 6,852, \texttt{reward\_score} de 0,704, QED de 0,770 y cumplimiento de todos los filtros ADMET duros, incluido hERG. C23 representa una hipótesis más exploratoria: pIC$_{50}$ predicha de 6,490, QED de 0,935, cumplimiento completo de ADMET duro y baja similitud frente a aprobados, con Tanimoto de 0,180. C26 muestra el QED más alto, 0,942, pero falla hERG y AMES, por lo que no puede considerarse una candidata segura pese a su calidad molecular. Esta lectura por perfiles es más honesta y útil que declarar una única molécula ganadora.
+\begin{samepage}
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{p{1cm} p{3cm} Y p{4cm}}
+        \hline
+        \textbf{ID} & \textbf{Perfil} & \textbf{SMILES} & \textbf{Datos clave} \\
+        \hline
+        C07 &
+        Mayor actividad predicha &
+        \texttt{\seqsplit{CCOc1cc2ncnc(Nc3ccc(F)c(Cl)c3)c2cc1NC(=O)/C=C/CN1CCCC1}} &
+        pIC$_{50}$ = 8,171; QED = 0,444; hERG desfavorable; fallo ClinTox; Tanimoto frente a dacomitinib = 0,861. \\
+        \hline
+    \end{tabularx}
+    \caption{Resumen del perfil molecular de la candidata C07.}
+    \label{tab:perfil_c07}
+\end{table}
 
-En conjunto, los resultados obtenidos son coherentes con lo esperado para una \textit{pipeline} de priorización computacional temprana. Era esperable que el modelo generativo, al partir de un modelo preentrenado y ajustarse sobre moléculas activas frente a EGFR, produjera una proporción alta de SMILES válidos y muchas moléculas con actividad \textit{proxy} favorable. También era esperable que la selección multiobjetivo redujera drásticamente el conjunto inicial. Lo más relevante, y en cierto modo más crítico, fue comprobar que las mejores moléculas por actividad no son necesariamente las más defendibles globalmente. La aparición de hERG como riesgo dominante y la baja variabilidad del score ADMET blando muestran que el problema no se resuelve maximizando una única métrica, sino interpretando cuidadosamente los compromisos entre objetivos.
+\noindent\textbf{Siguiente paso recomendado.}
+No debe presentarse como la mejor candidata global, aunque tenga la mayor actividad predicha. Su utilidad principal es servir como hipótesis de alta actividad pero alto riesgo. El análisis posterior debería comprobar si la predicción procede de una región química ya conocida y rediseñar la estructura para reducir hERG, mejorar QED y disminuir su similitud con dacomitinib.
+\end{samepage}
 
-Por tanto, la aportación principal del trabajo no es la identificación de un nuevo inhibidor de EGFR, sino la construcción de una arquitectura reproducible para transformar una muestra generativa amplia en una cartera reducida de hipótesis moleculares priorizadas. Esta diferencia es esencial. Las 30 candidatas finales no deben presentarse como fármacos, ni como inhibidores confirmados, ni como moléculas listas para desarrollo preclínico. Deben presentarse como hipótesis computacionales generadas, filtradas, comparadas y priorizadas bajo criterios explícitos. Esa es precisamente la fortaleza del trabajo: no promete validación farmacológica, sino una metodología trazable para reducir el espacio químico y orientar análisis posteriores.
+\vspace{0.35cm}
+
+\begin{samepage}
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{p{1cm} p{3cm} Y p{4cm}}
+        \hline
+        \textbf{ID} & \textbf{Perfil} & \textbf{SMILES} & \textbf{Datos clave} \\
+        \hline
+        C23 &
+        Mayor novedad estructural &
+        \texttt{\seqsplit{CC(=O)Nc1nc(C(=O)N2CCC(c3ncco3)CC2)cs1}} &
+        pIC$_{50}$ = 6,490; QED = 0,935; hERG favorable; Tanimoto frente a aprobados = 0,180. \\
+        \hline
+    \end{tabularx}
+    \caption{Resumen del perfil molecular de la candidata C23.}
+    \label{tab:perfil_c23}
+\end{table}
+
+\noindent\textbf{Siguiente paso recomendado.}
+Mantenerla como hipótesis exploratoria. Su baja similitud frente a inhibidores EGFR aprobados aporta interés, pero también aumenta la incertidumbre del modelo predictivo. Antes de avanzar, conviene contrastarla con modelos QSAR alternativos, \textit{docking} estructural y análisis del dominio de aplicabilidad.
+\end{samepage}
+
+\vspace{0.35cm}
+
+\begin{samepage}
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{p{1cm} p{3cm} Y p{4cm}}
+        \hline
+        \textbf{ID} & \textbf{Perfil} & \textbf{SMILES} & \textbf{Datos clave} \\
+        \hline
+        C26 &
+        Mejor calidad molecular tipo fármaco &
+        \texttt{\seqsplit{COc1ccc2c(NC(=O)C3C(C)OC(C)C3C)ncnc2c1}} &
+        pIC$_{50}$ = 6,502; QED = 0,942; hERG desfavorable; fallo AMES. \\
+        \hline
+    \end{tabularx}
+    \caption{Resumen del perfil molecular de la candidata C26.}
+    \label{tab:perfil_c26}
+\end{table}
+
+\noindent\textbf{Siguiente paso recomendado.}
+No avanzar directamente hacia validación. Aunque presenta un QED muy alto, las alertas hERG y AMES son demasiado relevantes para ignorarlas. Puede conservarse como scaffold de interés para optimización, pero la prioridad debería ser rediseñar análogos que eliminen esas señales antes de cualquier análisis experimental.
+\end{samepage}
+
+En conjunto, los resultados son coherentes con una etapa temprana de diseño molecular asistido por inteligencia artificial. El flujo desarrollado no demuestra actividad biológica real, seguridad farmacológica ni viabilidad sintética definitiva. Sin embargo, sí demuestra que una arquitectura modular basada en generación molecular, QSAR, ADMET-AI, descriptores moleculares y selección multiobjetivo permite reducir el espacio químico inicial, explicitar los criterios de decisión y obtener una cartera diversa de hipótesis moleculares con distintos niveles de prioridad.
+
+Por tanto, el trabajo cumple su objetivo como proyecto de ciencia de datos aplicada al descubrimiento molecular temprano. Su valor principal está en separar moléculas simplemente generadas de moléculas computacionalmente priorizadas, mostrando tanto las oportunidades como los límites del uso de inteligencia artificial generativa en diseño molecular frente a EGFR.
+
 
 \section{Grado de cumplimiento de los objetivos}
 
-El primer objetivo específico, construir un conjunto de datos de bioactividad frente a EGFR a partir de registros experimentales de ChEMBL, se cumplió. El trabajo partió de 25.758 registros y produjo un dataset canónico agregado de 10.466 moléculas, además de un conjunto de 8.553 SMILES activos para el ajuste del modelo generativo. La aplicación de filtros de unidad, tipo de medida, relación experimental, validez de datos y canonicalización permitió obtener una base más fiable para las etapas posteriores.
+El objetivo principal del trabajo se considera cumplido. Se ha diseñado, implementado y evaluado una pipeline de inteligencia artificial generativa para la generación y priorización multiobjetivo de moléculas tipo fármaco en el contexto de EGFR.
 
-El segundo objetivo, ajustar un modelo generativo molecular preentrenado, también se cumplió. Se utilizó el modelo \texttt{LSTM\_LM\_Small\_ZINC\_NC} de MRL, ajustado durante ocho epochs y seleccionado finalmente en la epoch 3. La generación final produjo 9.068 moléculas válidas, únicas y nuevas respecto al conjunto de entrenamiento, lo que demuestra que el modelo mantuvo capacidad generativa útil tras el ajuste.
+Los objetivos específicos también se han alcanzado de forma satisfactoria. Se construyó un conjunto de datos de bioactividad frente a EGFR, se ajustó un modelo generativo molecular preentrenado, se generaron nuevas estructuras SMILES, se entrenó un modelo QSAR como señal aproximada de actividad, se incorporaron predicciones ADMET, se calcularon métricas de calidad molecular y se aplicó una selección multiobjetivo basada en dominancia de Pareto.
 
-El tercer objetivo, evaluar la calidad de las moléculas generadas mediante validez, unicidad y novedad, se cumplió de forma explícita. La generación final alcanzó un 90,82\% de validez, una unicidad válida cercana al 100\% y un 99,8788\% de novedad frente al conjunto de entrenamiento entre moléculas válidas únicas. Estas métricas permitieron justificar la selección del checkpoint y validar la calidad inicial del espacio generado.
-
-El cuarto objetivo, entrenar y evaluar un modelo QSAR de regresión para estimar pIC$_{50}$ frente a EGFR, se cumplió con resultados razonables. El modelo Random Forest, evaluado mediante partición por scaffold, obtuvo en test un MAE de 0,649, RMSE de 0,833, $R^2$ de 0,605 y Spearman de 0,798. Estos resultados son suficientes para utilizar el modelo como herramienta de ranking relativo, aunque no como sustituto de ensayos experimentales.
-
-El quinto objetivo, evaluar propiedades ADMET mediante ADMET-AI, se cumplió. Se integraron predicciones ADMET sobre las 8.241 moléculas filtradas, se definieron filtros duros y se calculó un score ADMET blando. La interpretación final mostró que los filtros duros fueron más informativos que el score blando, especialmente por el papel dominante del riesgo hERG.
-
-El sexto objetivo, calcular descriptores fisicoquímicos y métricas de calidad molecular, también se cumplió. Se calcularon propiedades como peso molecular, LogP, TPSA, donadores y aceptores de hidrógeno, enlaces rotables, átomos pesados, QED, violaciones de Lipinski, similitud de Tanimoto y scaffolds de Murcko. Estos descriptores se integraron tanto en filtros iniciales como en el scoring posterior.
-
-El séptimo objetivo, establecer criterios de priorización que combinen actividad, calidad molecular, ADMET, novedad y similitud, se cumplió mediante la construcción de scores normalizados y reglas de elegibilidad. La fase de elegibilidad redujo las 8.241 moléculas evaluadas a 2.133, demostrando que los criterios definidos tuvieron un efecto selectivo real.
-
-El octavo objetivo, aplicar una estrategia de selección multiobjetivo basada en dominancia de Pareto, se cumplió. El frente de Pareto redujo las 2.133 moléculas elegibles a 37 soluciones no dominadas. Posteriormente, la ordenación auxiliar por \texttt{reward\_score} y el control de diversidad por scaffold permitieron seleccionar 30 candidatas finales.
-
-El noveno objetivo, analizar críticamente el conjunto final de moléculas seleccionadas, también se cumplió. La shortlist fue evaluada en términos de actividad predicha, ADMET, hERG, QED, Lipinski, similitud frente al entrenamiento, similitud frente a inhibidores EGFR aprobados, diversidad de scaffolds y perfiles interpretativos. Este análisis permitió identificar no solo las fortalezas del conjunto final, sino también sus principales riesgos.
+La planificación y la metodología general también resultaron adecuadas. La división del trabajo en notebooks independientes facilitó la trazabilidad, la depuración y la interpretación de cada etapa. Esta estructura modular permitió introducir ajustes durante el desarrollo sin comprometer el flujo completo, especialmente en la selección del checkpoint generativo, la definición de criterios de elegibilidad y la interpretación crítica de la shortlist final.
 
 \section{Limitaciones}
 
-La primera limitación del trabajo es que la actividad frente a EGFR se estimó mediante un modelo QSAR, no mediante ensayos experimentales. La pIC$_{50}$ predicha debe interpretarse como una señal \textit{proxy} útil para priorización relativa, pero no como evidencia real de inhibición. Incluso con un rendimiento razonable en test, el modelo presenta un error medio absoluto cercano a 0,65 unidades logarítmicas, suficiente para que diferencias pequeñas entre candidatas no deban sobreinterpretarse.
+La principal limitación del trabajo es que todas las conclusiones dependen de modelos computacionales. La actividad frente a EGFR se estima mediante un modelo QSAR, por lo que debe entenderse como una señal proxy y no como una medida experimental de afinidad o inhibición. Del mismo modo, las propiedades ADMET proceden de predicciones y no sustituyen ensayos in vitro o in vivo.
 
-La segunda limitación es que no se realizó validación estructural mediante \textit{docking} molecular, dinámica molecular ni análisis explícito del bolsillo de unión de EGFR. Esto significa que la \textit{pipeline} no evalúa directamente la compatibilidad tridimensional entre las moléculas generadas y la proteína diana. En consecuencia, una molécula con buena pIC$_{50}$ predicha puede no adoptar una conformación adecuada, no formar interacciones relevantes en el sitio activo o no ser selectiva frente a otras quinasas.
+Otra limitación importante es la ausencia de validación estructural explícita. El trabajo no incorpora docking molecular, dinámica molecular ni análisis del bolsillo de unión de EGFR. Por tanto, no puede afirmarse que las moléculas seleccionadas adopten poses favorables ni que interaccionen de forma adecuada con la proteína diana.
 
-La tercera limitación es la dependencia de predicciones ADMET computacionales. ADMET-AI permite cribar de forma rápida grandes conjuntos moleculares, pero sus resultados no sustituyen ensayos específicos de toxicidad, permeabilidad, metabolismo o seguridad cardiovascular. El caso de hERG es especialmente importante: el alto número de candidatas que no superan este criterio debe tratarse como una señal de alerta, no como una confirmación definitiva de cardiotoxicidad, pero tampoco debe ignorarse.
+Además, el modelo generativo utilizado no es condicional. La optimización no ocurre durante la generación, sino después, mediante scoring, filtrado y selección. Este planteamiento favorece la trazabilidad del proceso, pero también implica que muchas moléculas generadas sean descartadas posteriormente.
 
-La cuarta limitación es que el modelo generativo utilizado no es condicional. La optimización no ocurre durante la generación, sino después, mediante scoring, filtrado y selección. Esto hace que el flujo sea modular y auditable, pero también implica que el generador no aprende directamente de los objetivos de actividad, ADMET o QED durante la generación. En consecuencia, muchas moléculas generadas deben descartarse posteriormente.
+Por último, la sintetizabilidad no se ha evaluado de forma suficientemente profunda. Aunque se han considerado propiedades de calidad molecular y reglas fisicoquímicas, sería necesario incorporar métricas específicas de accesibilidad sintética o análisis retrosintético antes de plantear cualquier avance experimental.
 
-La quinta limitación es que la sintetizabilidad no se incorporó como criterio explícito de selección final. Aunque el trabajo analiza propiedades tipo fármaco y QED, no incluye una métrica específica como SA Score, SCScore, rutas retrosintéticas o disponibilidad de bloques de síntesis. Esta ausencia es relevante porque una molécula computacionalmente prometedora puede ser difícil, cara o poco realista de sintetizar.
+\section{Impacto y alcance responsable}
 
-La sexta limitación es que la comparación frente a inhibidores EGFR aprobados se realizó mediante similitud estructural, no mediante equivalencia funcional. Una baja similitud frente a aprobados aporta novedad, pero también mayor incertidumbre. Del mismo modo, una similitud elevada con un inhibidor conocido puede sugerir plausibilidad química, pero no confirma actividad ni seguridad.
+Desde el punto de vista de sostenibilidad, el trabajo muestra cómo un flujo computacional puede ayudar a reducir un espacio químico amplio antes de llegar a fases experimentales más costosas. Esta aproximación no elimina la necesidad de ensayos de laboratorio, pero sí puede contribuir a orientar mejor qué moléculas merece la pena estudiar en etapas posteriores.
+
+Desde una perspectiva ética y científica, el principal riesgo era sobreinterpretar los resultados. Para mitigarlo, las moléculas seleccionadas se presentan como hipótesis computacionales, no como fármacos, inhibidores validados ni candidatos clínicos. Esta distinción es esencial para comunicar correctamente el alcance del trabajo.
 
 \section{Trabajos futuros}
 
-La primera línea futura debería ser aplicar validación estructural a un subconjunto reducido de candidatas. En lugar de hacer \textit{docking} sobre todas las moléculas generadas, tendría más sentido partir de perfiles concretos de la shortlist, especialmente C06 como candidata conservadora, C05 como perfil equilibrado, C23 como hipótesis exploratoria y C07 como caso de alta actividad pero alto riesgo. Esta validación debería incluir estructuras relevantes de EGFR, idealmente considerando variantes asociadas a resistencia, y analizar interacciones clave en el bolsillo de unión.
+Una primera línea futura sería incorporar validación estructural mediante docking molecular frente a EGFR. Esto permitiría evaluar si las moléculas priorizadas presentan poses de unión plausibles y si sus interacciones son compatibles con el sitio activo de la proteína.
 
-La segunda línea futura debería incorporar una evaluación explícita de sintetizabilidad. Para ello podrían añadirse métricas como SA Score o SCScore, herramientas de retrosíntesis computacional y filtros de complejidad estructural. Esta extensión permitiría distinguir moléculas no solo prometedoras desde el punto de vista predictivo, sino también más realistas para una posible síntesis experimental.
+Una segunda línea sería reforzar el análisis de sintetizabilidad, incorporando métricas como SAS, penalizaciones por complejidad estructural o herramientas de retrosíntesis computacional. Esto ayudaría a diferenciar moléculas atractivas desde el punto de vista predictivo de moléculas realmente accesibles desde el punto de vista químico.
 
-La tercera línea futura debería mejorar el modelo QSAR. Aunque el Random Forest utilizado ofrece un baseline sólido, sería conveniente comparar su rendimiento con modelos alternativos, como Gradient Boosting, redes neuronales sobre fingerprints, modelos basados en grafos o enfoques multitarea. También sería útil incorporar estimación de incertidumbre, calibración de predicciones y análisis más formal del dominio de aplicabilidad. Esto permitiría penalizar moléculas cuya actividad predicha sea incierta, no solo aquellas con baja similitud al entrenamiento.
+Otra extensión relevante sería utilizar modelos generativos condicionados, aprendizaje por refuerzo o aprendizaje activo. En lugar de generar primero y seleccionar después, estas estrategias permitirían guiar directamente la generación hacia regiones del espacio químico con mejores compromisos entre actividad, ADMET, calidad molecular, novedad y sintetizabilidad.
 
-La cuarta línea futura debería refinar la evaluación ADMET. El score ADMET blando mostró poca variabilidad, por lo que sería recomendable rediseñar esta métrica, incorporar herramientas ADMET adicionales y construir un consenso entre modelos. Además, hERG debería tratarse como un criterio prioritario en futuras iteraciones, ya sea como filtro más estricto, penalización fuerte o condición de selección conservadora.
-
-La quinta línea futura consistiría en cerrar el ciclo generativo mediante modelos condicionados, aprendizaje por refuerzo o aprendizaje activo. En este trabajo, la optimización se realiza después de generar moléculas. Una extensión natural sería utilizar las señales de actividad, ADMET, QED, similitud y sintetizabilidad para guiar directamente la generación de nuevas moléculas. Esto permitiría reducir el número de estructuras descartadas y explorar de forma más eficiente regiones del espacio químico con mejores compromisos multiobjetivo.
-
-La sexta línea futura sería realizar estudios de ablación. Sería útil comparar la \textit{pipeline} completa frente a versiones alternativas: generación sin \textit{fine-tuning}, selección sin Pareto, selección solo por \texttt{reward\_score}, selección sin control de similitud o selección sin control de diversidad por scaffold. Este análisis permitiría cuantificar qué parte del flujo aporta realmente valor y qué decisiones metodológicas son más importantes.
-
-Finalmente, una posible etapa experimental, fuera del alcance de este trabajo, sería seleccionar un conjunto muy reducido de moléculas para validación \textit{in vitro}. Esta selección no debería basarse únicamente en pIC$_{50}$ predicha, sino en perfiles equilibrados. Bajo los criterios actuales, C06 y C05 parecen más defendibles como candidatas prudentes que C07, pese a que C07 presenta la mayor actividad predicha. C23 podría mantenerse como hipótesis exploratoria por su novedad y buen QED, mientras que C26 requeriría resolver primero las alertas hERG y AMES antes de considerarse seriamente.
-
-\section{Conclusión final}
-
-Este trabajo demuestra que una \textit{pipeline} modular basada en inteligencia artificial generativa, QSAR, ADMET-AI, descriptores moleculares y selección multiobjetivo puede transformar una muestra inicial amplia de moléculas generadas en una shortlist reducida, diversa e interpretable de hipótesis moleculares frente a EGFR. La principal aportación no es una molécula concreta, sino el flujo reproducible de generación, evaluación, descarte y priorización.
-
-La shortlist final de 30 candidatas presenta actividad predicha favorable, QED globalmente alto, baja concentración de violaciones de Lipinski y diversidad estructural elevada. Sin embargo, también muestra riesgos relevantes, especialmente asociados a hERG. Por tanto, la interpretación correcta de los resultados es equilibrada: la metodología permite encontrar moléculas computacionalmente interesantes, pero no permite afirmar que sean inhibidores reales, seguros o sintetizables sin validaciones adicionales.
-
-En definitiva, el trabajo cumple su objetivo como proyecto de ciencia de datos aplicada al descubrimiento molecular temprano. Genera hipótesis, reduce el espacio químico, hace explícitos los criterios de decisión y permite priorizar moléculas de forma trazable. Su valor está en haber construido una arquitectura reproducible y crítica, capaz de separar moléculas prometedoras de moléculas simplemente generadas, y de mostrar con claridad tanto las oportunidades como las limitaciones del uso de inteligencia artificial generativa en diseño molecular.
-
-\chapter{Conclusiones y trabajos futuros}
-
-%\section{Conclusiones}
-Este capítulo tiene que incluir:
-\begin{itemize}
-\item Una descripción de las conclusiones del trabajo:
-\begin{itemize}
-    \item Una vez se han obtenido los resultados, ¿qué conclusiones se extraen?
-    \item ¿Estos resultados son los esperados? ¿O han sido sorprendentes? ¿Por qué? 
-\end{itemize}
-\item Una reflexión crítica sobre el logro de los objetivos planteados inicialmente:
-\begin{itemize}
-    \item ¿Hemos logrado todos los objetivos? Si la respuesta es negativa, ¿por qué motivo?
-\end{itemize}
-\item Un análisis crítico del seguimiento de la planificación y metodología a lo largo del producto:
-\begin{itemize}
-    \item ¿Se ha seguido la planificación?
-    \item ¿La metodología prevista ha sido suficientemente adecuada?
-    \item ¿Ha habido que introducir cambios para garantizar el éxito del trabajo? ¿Por qué? 
-\end{itemize}
-\item De los impactos previstos en \ref{s:etic}, ético-sociales, de sostenibilidad y de diversidad, evaluar/mencionar si se han mitigado (si eran negativos) o si se han conseguido (si eran positivos). 
-\item Si han aparecido impactos no previstos a \ref{s:etic}, evaluar/mencionar cómo se han mitigado (si eran negativos) o que han aportado (si eran positivos).
-\item Las líneas de trabajo futuro que no se han podido explorar en este trabajo y han quedado pendientes.
-
-
-%\item Una descripción de las conclusiones del trabajo: Qué lecciones se han aprendido del trabajo?
-%\item Una reflexión crítica sobre el logro de los objetivos planteados inicialmente: Hemos conseguido todos los objetivos? Si la respuesta es negativa, por qué motivo?
-%\item De los impactos previstos a la sección \ref{s:etic}, una evaluación, o al menos, mención, sobre si se han mitigado (si eran negativos) o si se han conseguido (si eran positivos). 
-\end{itemize}
-
-%\section{Líneas de futuro}
-%Las líneas de trabajo futuro que no se han podido explorar en este trabajo y han quedado pendientes.
-
-%\section{Seguimiento de la planificación}
-%Un análisis crítico del seguimiento de la planificación y metodología a lo largo del trabajo: 
-%\begin{itemize}
-%    \item  Se ha seguido la planificación? 
-%    \item La metodología prevista ha sido la adecuada? 
-%    \item Ha habido que introducir cambios para garantizar el éxito del trabajo? ¿Por qué? 
-%\end{itemize}
 
 \chapter{Glosario}
 
-Definición de los términos y acrónimos más relevantes utilizados dentro de la Memoria.
+A continuación se recogen los términos en inglés y acrónimos más relevantes utilizados en la memoria. No se incluyen todos los conceptos técnicos del trabajo, sino aquellos que resultan especialmente importantes para entender la metodología, los resultados y la discusión.
 
+\begin{description}
+
+    \item[\textit{Drug-like}] Término utilizado para describir moléculas con propiedades fisicoquímicas compatibles con el desarrollo farmacéutico, especialmente en el contexto de pequeñas moléculas.
+
+    \item[\textit{Fine-tuning}] Proceso de ajuste de un modelo previamente entrenado sobre un nuevo conjunto de datos más específico.
+
+    \item[\textit{Scoring}] Etapa de evaluación y asignación de puntuaciones a las moléculas generadas.
+
+    \item[\textit{ADMET}] Acrónimo de \textit{Absorption, Distribution, Metabolism, Excretion and Toxicity}. Agrupa propiedades farmacocinéticas y toxicológicas que condicionan la viabilidad de una molécula como posible fármaco. En este trabajo se evalúa mediante ADMET-AI.
+
+    \item[\textit{Endpoint}] Variable concreta predicha dentro de una herramienta ADMET. Por ejemplo, hERG, AMES, ClinTox, biodisponibilidad, absorción intestinal o interacción con enzimas CYP. Cada endpoint representa un aspecto específico del comportamiento farmacológico o toxicológico de una molécula.
+
+    \item[hERG] Canal de potasio cardíaco asociado al riesgo de prolongación del intervalo QT y cardiotoxicidad. En descubrimiento de fármacos se considera una alerta crítica, ya que la inhibición indeseada de hERG puede comprometer la seguridad de una molécula candidata.
+
+    \item[SMILES] Siglas de \textit{Simplified Molecular Input Line Entry System}. 
+
+    \item[QSAR] Siglas de \textit{Quantitative Structure--Activity Relationship}. 
+
+    \item[pIC$_{50}$] Transformación logarítmica de la concentración inhibitoria IC$_{50}$. Valores más altos indican mayor potencia estimada.
+
+    \item[QED] Siglas de \textit{Quantitative Estimate of Drug-likeness}. Valores más altos indican un perfil más favorable tipo fármaco.
+
+    \item[Scaffold] Núcleo estructural principal de una molécula. 
+
+    \item[Murcko scaffold] Tipo concreto de scaffold que conserva el armazón central de anillos y conectores de una molécula. 
+
+    \item[Training set] Conjunto de moléculas utilizado para entrenar o ajustar un modelo. 
+
+    \item[Pareto front] Conjunto de soluciones no dominadas en un problema multiobjetivo. 
+
+    \item[Docking] Método computacional que estima la posible unión entre una molécula y el sitio activo de una proteína. 
+
+\end{description}
 
 
 \chapter{Bibliografía}
 
+\begingroup
+\sloppy
 \begin{enumerate}
-
-\item Kattuparambil, A. A., Chaurasia, D. K., Shekhar, S., Srinivasan, A., Mondal, S., Aduri, R., and Jayaram, B.  
+\item \label{ref:kattuparambil2025} Kattuparambil, A. A., Chaurasia, D. K., Shekhar, S., Srinivasan, A., Mondal, S., Aduri, R., and Jayaram, B.  
 ``Exploring chemical space for ``drug-like'' small molecules in the age of AI,''  
 \textit{Frontiers in Molecular Biosciences}, vol. 12, p. 1553667, 2025.  
-doi: 10.3389/fmolb.2025.1553667.
+doi: \url{https://doi.org/10.3389/fmolb.2025.1553667}.
 
-\item Zhang, Z., Bian, Y., Xie, A., Han, P., and Zhou, S.  
+\item \label{ref:zhang2024} Zhang, Z., Bian, Y., Xie, A., Han, P., and Zhou, S.  
 ``Can pretrained models really learn better molecular representations for AI-aided drug discovery?,''  
 \textit{Journal of Chemical Information and Modeling}, vol. 64, no. 7, pp. 2921--2930, 2024.  
-doi: 10.1021/acs.jcim.3c0170.
+doi: \url{https://doi.org/10.1021/acs.jcim.3c01707}.
 
-\item Swanson, K., Walther, P., Leitz, J., Mukherjee, S., Wu, J. C., Shivnaraine, R. V., and Zou, J.  
+\item \label{ref:swanson2024} Swanson, K., Walther, P., Leitz, J., Mukherjee, S., Wu, J. C., Shivnaraine, R. V., and Zou, J.  
 ``ADMET-AI: A machine learning ADMET platform for evaluation of large-scale chemical libraries,''  
 \textit{Bioinformatics}, vol. 40, no. 7, p. btae416, 2024.  
-doi: 10.1093/bioinformatics/btae416.
+doi: \url{https://doi.org/10.1093/bioinformatics/btae416}.
 
-\item Angelo, J. S., Guedes, I. A., Barbosa, H. J. C., and Dardenne, L. E.  
+\item \label{ref:angelo2023} Angelo, J. S., Guedes, I. A., Barbosa, H. J. C., and Dardenne, L. E.  
 ``Multi- and many-objective optimization: Present and future in \textit{de novo} drug design,''  
 \textit{Frontiers in Chemistry}, vol. 11, p. 1288626, 2023.  
-doi: 10.3389/fchem.2023.1288626.
+doi: \url{https://doi.org/10.3389/fchem.2023.1288626}.
 
-\item Nada, H., Gul, A. R., Elkamhawy, A., Kim, S., Kim, M., Choi, Y., Park, T. J., and Lee, K.  
-``Machine learning-based approach to developing potent EGFR inhibitors for breast cancer—Design, synthesis, and \textit{in vitro} evaluation,''  
+\item \label{ref:nada2023} Nada, H., Gul, A. R., Elkamhawy, A., Kim, S., Kim, M., Choi, Y., Park, T. J., and Lee, K.  
+``Machine learning-based approach to developing potent EGFR inhibitors for breast cancer---Design, synthesis, and \textit{in vitro} evaluation,''  
 \textit{ACS Omega}, vol. 8, no. 35, pp. 31784--31800, 2023.  
-doi: 10.1021/acsomega.3c02799.
+doi: \url{https://doi.org/10.1021/acsomega.3c02799}.
 
-\item Valverde, C.  
+\item \label{ref:valverde2025} Valverde, C.  
 \textit{Pocket-Aware Molecular Generation Through Learned Protein Representations}.  
-Master’s Thesis, Facultat de Matemàtiques i Informàtica, Universitat de Barcelona, 2025.
+Master's Thesis, Facultat de Matemàtiques i Informàtica, Universitat de Barcelona, 2025.
 
-\item VeriSIM Life.  
-``How AI assists small molecule drug design and development,'' Resources, VeriSIM Life, 2024.
-
-\item Niazi, S. K.  
+\item \label{ref:niazi2025} Niazi, S. K.  
 ``Artificial intelligence in small-molecule drug discovery: A critical review of methods, applications, and real-world outcomes,''  
-\textit{Pharmaceuticals}, vol. 18, p. 1271, 2025.  
-doi: 10.3390/ph18091271.
+\textit{Pharmaceuticals}, vol. 18, no. 9, p. 1271, 2025.  
+doi: \url{https://doi.org/10.3390/ph18091271}.
 
-\item Oliveira, R. I., Pereira, T. O., Abbasi, M., Salvador, J. A. R., and Arrais, J. P.  
+\item \label{ref:oliveira2025} Oliveira, R. I., Pereira, T. O., Abbasi, M., Salvador, J. A. R., and Arrais, J. P.  
 ``Deep learning for small-molecule drug discovery: From molecular design to clinical translation,''  
-\textit{Journal of Pharmaceutical Analysis}, 2025.  
-doi: 10.1016/j.jpha.2025.101533.
+\textit{Journal of Pharmaceutical Analysis}, p. 101533, 2025.  
+doi: \url{https://doi.org/10.1016/j.jpha.2025.101533}.
 
-\item Abdel-Rehim, A., Soldatova, L. N., and King, R. D.  
-``A case study of the application of AI to early-stage drug discovery,''  
-\textit{Scientific Reports}, 2025.  
-doi: 10.1038/s41598-025-32805-1.
+\item \label{ref:pham2025} Pham, P., Nguyen, V. T. D., Cho, K. H., and Hy, T. S.  
+``DrugPipe: Generative artificial intelligence-assisted virtual screening pipeline for generalizable and efficient drug repurposing,''  
+\textit{Biology Methods and Protocols}, vol. 10, no. 1, p. bpaf038, 2025.  
+doi: \url{https://doi.org/10.1093/biomethods/bpaf038}.
 
-\item Pham, P., Viet Thanh Duy, N., Cho, K. H., and Hy, T. S.  
-``Generative AI-assisted virtual screening pipeline for generalizable and efficient drug repurposing,''  
-Technical Report, 2025.
+\item \label{ref:scannell2012} Scannell, J. W., Blanckley, A., Boldon, H., and Warrington, B.  
+``Diagnosing the decline in pharmaceutical R\&D efficiency,''  
+\textit{Nature Reviews Drug Discovery}, vol. 11, pp. 191--200, 2012.  
+doi: \url{https://doi.org/10.1038/nrd3681}.
 
-\item Sutanto, H., and Fetarayani, D.  
-``Integrating artificial intelligence into small molecule development for precision cancer immunomodulation therapy,''  
-\textit{npj Precision Oncology}, 2025.  
-doi: 10.1038/s44386-025-00029-y.
+\item \label{ref:dimasi2016} DiMasi, J. A., Grabowski, H. G., and Hansen, R. W.  
+``Innovation in the pharmaceutical industry: New estimates of R\&D costs,''  
+\textit{Journal of Health Economics}, vol. 47, pp. 20--33, 2016.  
+doi: \url{https://doi.org/10.1016/j.jhealeco.2016.01.012}.
 
-\item Xia, Y., Wu, K., Deng, P., Liu, R., Zhang, Y., Guo, H., Cui, Y., Pei, Q., Wu, L., Xie, S., Chen, S., Lu, X., Hu, S., Wu, J., Chan, C.-K., Chen, S., Zhou, L., Yu, N., Liu, H., Guo, J., Qin, T., and Liu, T.-Y.  
-``Target-aware molecule generation for drug design using a chemical language model,''  
-Technical Report, 2025.
+\item \label{ref:sun2022} Sun, D., Gao, W., Hu, H., and Zhou, S.  
+``Why 90\% of clinical drug development fails and how to improve it?,''  
+\textit{Acta Pharmaceutica Sinica B}, vol. 12, no. 7, pp. 3049--3062, 2022.  
+doi: \url{https://doi.org/10.1016/j.apsb.2022.02.002}.
+
+\item \label{ref:weininger1988} Weininger, D.  
+``SMILES, a chemical language and information system. 1. Introduction to methodology and encoding rules,''  
+\textit{Journal of Chemical Information and Computer Sciences}, vol. 28, no. 1, pp. 31--36, 1988.  
+doi: \url{https://doi.org/10.1021/ci00057a005}.
+
+\item \label{ref:lipinski2001} Lipinski, C. A., Lombardo, F., Dominy, B. W., and Feeney, P. J.  
+``Experimental and computational approaches to estimate solubility and permeability in drug discovery and development settings,''  
+\textit{Advanced Drug Delivery Reviews}, vol. 46, no. 1--3, pp. 3--26, 2001.  
+doi: \url{https://doi.org/10.1016/S0169-409X(00)00129-0}.
+
+\item \label{ref:bickerton2012} Bickerton, G. R., Paolini, G. V., Besnard, J., Muresan, S., and Hopkins, A. L.  
+``Quantifying the chemical beauty of drugs,''  
+\textit{Nature Chemistry}, vol. 4, no. 2, pp. 90--98, 2012.  
+doi: \url{https://doi.org/10.1038/nchem.1243}.
+
+\item \label{ref:ertl2009} Ertl, P., and Schuffenhauer, A.  
+``Estimation of synthetic accessibility score of drug-like molecules based on molecular complexity and fragment contributions,''  
+\textit{Journal of Cheminformatics}, vol. 1, article 8, 2009.  
+doi: \url{https://doi.org/10.1186/1758-2946-1-8}.
+
+\item \label{ref:rogers2010} Rogers, D., and Hahn, M.  
+``Extended-connectivity fingerprints,''  
+\textit{Journal of Chemical Information and Modeling}, vol. 50, no. 5, pp. 742--754, 2010.  
+doi: \url{https://doi.org/10.1021/ci100050t}.
+
+\item \label{ref:bemis1996} Bemis, G. W., and Murcko, M. A.  
+``The properties of known drugs. 1. Molecular frameworks,''  
+\textit{Journal of Medicinal Chemistry}, vol. 39, no. 15, pp. 2887--2893, 1996.  
+doi: \url{https://doi.org/10.1021/jm9602928}.
+
+\item \label{ref:breiman2001} Breiman, L.  
+``Random forests,''  
+\textit{Machine Learning}, vol. 45, pp. 5--32, 2001.  
+doi: \url{https://doi.org/10.1023/A:1010933404324}.
+
+\item \label{ref:zdrazil2024} Zdrazil, B., Felix, E., Hunter, F., Manners, E. J., Blackshaw, J., Corbett, S., de Veij, M., Ioannidis, H., Lopez, D. M., Mosquera, J. F., Magarinos, M. P., Bosc, N., Arcila, R., Kizilören, T., Gaulton, A., Bento, A. P., Adasme, M. F., Monecke, P., Landrum, G. A., and Leach, A. R.  
+``The ChEMBL Database in 2023: a drug discovery platform spanning multiple bioactivity data types and time periods,''  
+\textit{Nucleic Acids Research}, vol. 52, no. D1, pp. D1180--D1192, 2024.  
+doi: \url{https://doi.org/10.1093/nar/gkad1004}.
+
+\item \label{ref:rdkit} Landrum, G.  
+``RDKit: Open-source cheminformatics software,''  
+RDKit documentation.  
+Disponible en: \url{https://www.rdkit.org/}.  
+Consultado el 24 de mayo de 2026.
+
+\item \label{ref:mrl_docs} DarkMatterAI.  
+``Molecular Reinforcement Learning: unlocking reinforcement learning for drug design,''  
+MRL documentation.  
+Disponible en: \url{https://darkmatterai.github.io/mrl/}.  
+Consultado el 24 de mayo de 2026.
+
+\item \label{ref:mrl_tutorial_affinity} DarkMatterAI.  
+``Small Molecule Affinity Optimization,''  
+MRL tutorials.  
+Disponible en: \url{https://darkmatterai.github.io/mrl/tutorials.small_molecule.affinity.html}.  
+Consultado el 24 de mayo de 2026.
+
+\item \label{ref:admet_ai_web} ADMET-AI.  
+``ADMET-AI web server and documentation,''  
+Greenstone Biosciences.  
+Disponible en: \url{https://admet.ai.greenstonebio.com/}.  
+Consultado el 24 de mayo de 2026.
+
+\item \label{ref:admet_ai_github} Swanson, K.  
+``ADMET-AI GitHub repository: Training and prediction scripts for ADMET-AI,''  
+GitHub repository.  
+Disponible en: \url{https://github.com/swansonk14/admet_ai}.  
+Consultado el 24 de mayo de 2026.
+
+\item \label{ref:olivecrona2017} Olivecrona, M., Blaschke, T., Engkvist, O., and Chen, H.  
+``Molecular de-novo design through deep reinforcement learning,''  
+\textit{Journal of Cheminformatics}, vol. 9, article 48, 2017.  
+doi: \url{https://doi.org/10.1186/s13321-017-0235-x}.
+
+\item \label{ref:pedregosa2011} Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., and Duchesnay, É.  
+``Scikit-learn: Machine Learning in Python,''  
+\textit{Journal of Machine Learning Research}, vol. 12, pp. 2825--2830, 2011.
+
+\item \label{ref:deb2002} Deb, K., Pratap, A., Agarwal, S., and Meyarivan, T.  
+``A fast and elitist multiobjective genetic algorithm: NSGA-II,''  
+\textit{IEEE Transactions on Evolutionary Computation}, vol. 6, no. 2, pp. 182--197, 2002.  
+doi: \url{https://doi.org/10.1109/4235.996017}.
 
 \end{enumerate}
+\endgroup
 
-\newpage
-\appendix
-Listado de apartados que son demasiado extensos para incluir dentro de la memoria y tienen un carácter autocontenido (por ejemplo, manuales de usuario, manuales de instalación, etc.)
- 
-Dependiendo del tipo de trabajo, es posible que no haya que añadir algún anexo.
+
+
 
 \end{document}
