@@ -72,12 +72,12 @@
 \contentsline {section}{\numberline {3.13}Limitaciones metodol\IeC {\'o}gicas}{42}{}%
 \contentsline {chapter}{\numberline {4}Resultados}{43}{}%
 \contentsline {section}{\numberline {4.1}Resultado global}{43}{}%
-\contentsline {section}{\numberline {4.2}Evaluaci\IeC {\'o}n del modelo generativo}{45}{}%
-\contentsline {section}{\numberline {4.3}Filtrado fisicoqu\IeC {\'\i }mico y calidad molecular inicial}{46}{}%
+\contentsline {section}{\numberline {4.2}Evaluaci\IeC {\'o}n del modelo generativo}{44}{}%
+\contentsline {section}{\numberline {4.3}Filtrado fisicoqu\IeC {\'\i }mico y calidad molecular inicial}{45}{}%
 \contentsline {section}{\numberline {4.4}Modelo QSAR y actividad predicha frente a EGFR}{47}{}%
-\contentsline {section}{\numberline {4.5}Similitud estructural y control de dominio}{48}{}%
+\contentsline {section}{\numberline {4.5}Similitud estructural y control de dominio}{47}{}%
 \contentsline {section}{\numberline {4.6}ADMET y definici\IeC {\'o}n del conjunto elegible}{48}{}%
-\contentsline {section}{\numberline {4.7}Selecci\IeC {\'o}n mediante dominancia de Pareto}{49}{}%
+\contentsline {section}{\numberline {4.7}Selecci\IeC {\'o}n mediante dominancia de Pareto}{48}{}%
 \contentsline {section}{\numberline {4.8}Distribuci\IeC {\'o}n global del conjunto final de candidatas}{49}{}%
 \contentsline {section}{\numberline {4.9}Actividad y perfil ADMET de las candidatas}{52}{}%
 \contentsline {section}{\numberline {4.10}Novedad estructural}{54}{}%

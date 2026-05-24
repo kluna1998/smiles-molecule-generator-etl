@@ -8,7 +8,6 @@
 \contentsline {table}{\numberline {3.4}{\ignorespaces Rendimiento del modelo QSAR de pIC50 basado en Random Forest y fingerprints Morgan.}}{37}{}%
 \contentsline {table}{\numberline {3.5}{\ignorespaces Reglas ADMET duras aplicadas durante el scoring.}}{38}{}%
 \contentsline {table}{\numberline {3.6}{\ignorespaces Pesos utilizados para el c\IeC {\'a}lculo de \texttt {reward\_score}.}}{40}{}%
-\contentsline {table}{\numberline {3.7}{\ignorespaces Reducci\IeC {\'o}n progresiva del conjunto molecular durante la pipeline.}}{42}{}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {4.1}{\ignorespaces Resumen cuantitativo de la reducci\IeC {\'o}n progresiva del conjunto molecular durante el flujo computacional.}}{44}{}%
 \contentsline {table}{\numberline {4.2}{\ignorespaces Resumen descriptivo de las mol\IeC {\'e}culas que superaron el filtro fisicoqu\IeC {\'\i }mico b\IeC {\'a}sico.}}{47}{}%

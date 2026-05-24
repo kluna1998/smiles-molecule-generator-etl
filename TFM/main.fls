@@ -961,6 +961,11 @@ INPUT ./resultados_figuras/fig_02_metricas_generativas_epoch.png
 INPUT resultados_figuras/fig_02_metricas_generativas_epoch.png
 INPUT ./resultados_figuras/fig_02_metricas_generativas_epoch.png
 INPUT ./resultados_figuras/fig_02_metricas_generativas_epoch.png
+INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
+INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
+INPUT resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
+INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
+INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
 INPUT ./noulogo.png
 INPUT ./noulogo.png
 INPUT noulogo.png
@@ -969,11 +974,6 @@ INPUT ./eimt.png
 INPUT ./eimt.png
 INPUT eimt.png
 INPUT ./eimt.png
-INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
-INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
-INPUT resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
-INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
-INPUT ./resultados_figuras/fig_05_distribuciones_fisicoquimicas_filtrado.png
 INPUT ./noulogo.png
 INPUT ./noulogo.png
 INPUT noulogo.png

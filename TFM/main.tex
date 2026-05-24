@@ -238,6 +238,8 @@ También se ha entrenado un modelo QSAR de regresión para estimar pIC$_{50}$ fr
 
 El producto final del proceso es un conjunto reducido de 30 moléculas seleccionadas, acompañado de tablas, métricas y visualizaciones que permiten analizar su actividad predicha, perfil ADMET, calidad molecular, novedad estructural y diversidad química. Además, el trabajo queda organizado en notebooks reproducibles que documentan las fases principales: preprocesado, generación molecular, evaluación y selección, y análisis final de resultados.
 
+Estos notebooks se encuentran disponibles como material complementario en un repositorio de GitHub, con el objetivo de facilitar la reproducibilidad y revisión del flujo desarrollado.
+
 
 \section{Breve descripción de los otros capítulos de la memoria}
 
@@ -932,31 +934,17 @@ La pipeline exportó todos los resultados de manera estructurada para facilitar 
     \item \texttt{outputs/scoring/reports/}: resumen estructurado de ejecución.
 \end{itemize}
 
-\begin{table}[H]
-    \centering
-    \small
-    \begin{tabular}{p{7cm} p{5cm}}
-        \hline
-        \textbf{Etapa} & \textbf{Número de moléculas} \\
-        \hline
-        Moléculas generadas válidas y únicas & 9.068 \\
-       
-        Moléculas tras filtro químico básico & 8.241 \\
-      
-        Moléculas con scoring completo & 8.241 \\
-      
-        Moléculas elegibles & 2.133 \\
-        
-        Moléculas del frente de Pareto & 37 \\
-       
-        Shortlist final & 30 \\
-       \hline
-    \end{tabular}
-    \caption{Reducción progresiva del conjunto molecular durante la pipeline.}
-    \label{tab:reduccion_pipeline}
-\end{table}
-
 El archivo principal resultante fue \texttt{shortlist30\_final\_candidates.csv}. Este archivo contiene, para cada candidata, la estructura SMILES, actividad predicha, scores ADMET, similitud frente al conjunto de entrenamiento, similitud frente a inhibidores EGFR de referencia, QED, violaciones de Lipinski, descriptores fisicoquímicos y scaffold de Murcko.
+
+El código desarrollado durante el trabajo, incluyendo los notebooks principales de preprocesado, generación molecular, scoring y análisis final, se encuentra disponible en un repositorio público de GitHub:
+
+\vspace{0.1cm}
+\begin{center}
+\url{https://github.com/kluna1998/smiles-molecule-generator-etl}
+\end{center}
+\vspace{0.1cm}
+
+El repositorio se proporciona como material complementario para facilitar la revisión, trazabilidad y reproducibilidad del flujo computacional descrito en esta memoria.
 
 \section{Limitaciones metodológicas}
 
@@ -970,8 +958,6 @@ Estas limitaciones no invalidan el enfoque, pero delimitan correctamente su alca
 
 Este capítulo presenta los resultados obtenidos tras ejecutar el flujo computacional completo de generación, evaluación y selección molecular. El objetivo no es demostrar que las moléculas finales sean inhibidores de EGFR validadas, sino comprobar si el flujo propuesto permite transformar una muestra generativa amplia en una cartera reducida de hipótesis moleculares priorizadas bajo criterios explícitos.
 
-La lectura de los resultados se organiza en seis bloques. En primer lugar, se evalúa la calidad del modelo generativo y la elección de la versión final del modelo generativo. En segundo lugar, se analiza la reducción progresiva del conjunto molecular y el efecto del filtro fisicoquímico básico. En tercer lugar, se presentan el rendimiento del modelo QSAR y la distribución de actividad predicha. Posteriormente, se describe la integración de criterios ADMET y la definición del conjunto elegible. Finalmente, se analiza la selección mediante dominancia de Pareto y se interpreta el conjunto final de candidatas desde las perspectivas de actividad, calidad molecular, ADMET, novedad estructural, diversidad y perfiles de riesgo.
-
 \section{Resultado global}
 
 La Figura~\ref{fig:reduccion_pipeline} resume la reducción progresiva del conjunto molecular a lo largo del flujo computacional. El proceso partió de 10.000 SMILES brutos generados con el modelo MRL ajustado al dominio químico asociado a EGFR. Tras la validación con RDKit, la canonicalización, la eliminación de duplicados y la exclusión de coincidencias exactas con el conjunto de entrenamiento, se obtuvieron 9.068 moléculas válidas, únicas y nuevas respecto al conjunto empleado durante el ajuste fino.
@@ -984,8 +970,6 @@ Sobre estas moléculas se aplicó un filtro fisicoquímico básico, que redujo e
     \caption{Reducción progresiva del conjunto molecular durante el flujo computacional.}
     \label{fig:reduccion_pipeline}
 \end{figure}
-
-La Tabla~\ref{tab:resumen_reduccion_pipeline_resultados} cuantifica esta reducción. El resultado muestra que el conjunto final de candidatas no procede directamente del modelo generativo, sino de un proceso posterior de cribado y priorización. Esta distinción es importante: el modelo generativo proporciona un espacio inicial de búsqueda, mientras que la calidad final del conjunto seleccionado depende de la evaluación multiobjetivo posterior.
 
 \begin{table}[H]
     \centering
