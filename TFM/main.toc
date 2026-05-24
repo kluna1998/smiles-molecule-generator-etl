@@ -31,16 +31,16 @@
 \contentsline {subsection}{\numberline {2.4.1}Modelos QSAR en descubrimiento de f\IeC {\'a}rmacos}{25}{}%
 \contentsline {subsubsection}{QSAR como aproximaci\IeC {\'o}n a la afinidad frente a una diana}{25}{}%
 \contentsline {subsection}{\numberline {2.4.2}Predicci\IeC {\'o}n computacional de propiedades ADMET}{26}{}%
-\contentsline {subsubsection}{Herramientas modernas de predicci\IeC {\'o}n ADMET basadas en IA}{27}{}%
+\contentsline {subsubsection}{Herramientas modernas de predicci\IeC {\'o}n ADMET basadas en IA}{26}{}%
 \contentsline {section}{\numberline {2.5}Modelos generativos moleculares}{27}{}%
 \contentsline {subsection}{\numberline {2.5.1}Generaci\IeC {\'o}n molecular \textit {de novo}}{27}{}%
-\contentsline {subsection}{\numberline {2.5.2}Modelos generativos modernos}{28}{}%
+\contentsline {subsection}{\numberline {2.5.2}Modelos generativos modernos}{27}{}%
 \contentsline {subsection}{\numberline {2.5.3}Modelos preentrenados en qu\IeC {\'\i }mica molecular}{28}{}%
-\contentsline {section}{\numberline {2.6}Optimizaci\IeC {\'o}n multiobjetivo en dise\IeC {\~n}o molecular}{29}{}%
+\contentsline {section}{\numberline {2.6}Optimizaci\IeC {\'o}n multiobjetivo en dise\IeC {\~n}o molecular}{28}{}%
 \contentsline {subsection}{\numberline {2.6.1}Naturaleza multiobjetivo del descubrimiento de f\IeC {\'a}rmacos}{29}{}%
 \contentsline {subsection}{\numberline {2.6.2}Estrategias de optimizaci\IeC {\'o}n molecular}{29}{}%
-\contentsline {subsection}{\numberline {2.6.3}Dominancia de Pareto y soluciones no dominadas}{30}{}%
-\contentsline {subsection}{\numberline {2.6.4}M\IeC {\'e}tricas de evaluaci\IeC {\'o}n multiobjetivo}{31}{}%
+\contentsline {subsection}{\numberline {2.6.3}Dominancia de Pareto y soluciones no dominadas}{29}{}%
+\contentsline {subsection}{\numberline {2.6.4}M\IeC {\'e}tricas de evaluaci\IeC {\'o}n multiobjetivo}{30}{}%
 \contentsline {subsubsection}{Hipervolumen (\textit {Hypervolume})}{31}{}%
 \contentsline {subsubsection}{Dispersi\IeC {\'o}n (\textit {Spread})}{31}{}%
 \contentsline {subsubsection}{N\IeC {\'u}mero de soluciones no dominadas}{31}{}%
@@ -86,11 +86,12 @@
 \contentsline {section}{\numberline {4.11}Diversidad qu\IeC {\'\i }mica por scaffolds de Murcko}{57}{}%
 \contentsline {section}{\numberline {4.12}Perfiles interpretativos de candidatas}{57}{}%
 \contentsline {section}{\numberline {4.13}Riesgos detectados en el conjunto final de candidatas}{59}{}%
-\contentsline {chapter}{\numberline {5}Conclusiones}{60}{}%
-\contentsline {section}{\numberline {5.1}Grado de cumplimiento de los objetivos}{61}{}%
-\contentsline {section}{\numberline {5.2}Seguimiento de la planificaci\IeC {\'o}n y metodolog\IeC {\'\i }a}{62}{}%
-\contentsline {section}{\numberline {5.3}Impacto \IeC {\'e}tico, social y de sostenibilidad}{62}{}%
-\contentsline {section}{\numberline {5.4}Trabajos futuros}{62}{}%
-\contentsline {chapter}{\numberline {6}Conclusiones y trabajos futuros}{64}{}%
-\contentsline {chapter}{\numberline {7}Glosario}{65}{}%
-\contentsline {chapter}{\numberline {8}Bibliograf\IeC {\'\i }a}{66}{}%
+\contentsline {chapter}{\numberline {5}Conclusiones y trabajos futuros}{60}{}%
+\contentsline {section}{\numberline {5.1}Conclusiones}{60}{}%
+\contentsline {section}{\numberline {5.2}Grado de cumplimiento de los objetivos}{62}{}%
+\contentsline {section}{\numberline {5.3}Limitaciones}{63}{}%
+\contentsline {section}{\numberline {5.4}Trabajos futuros}{64}{}%
+\contentsline {section}{\numberline {5.5}Conclusi\IeC {\'o}n final}{65}{}%
+\contentsline {chapter}{\numberline {6}Conclusiones y trabajos futuros}{67}{}%
+\contentsline {chapter}{\numberline {7}Glosario}{68}{}%
+\contentsline {chapter}{\numberline {8}Bibliograf\IeC {\'\i }a}{69}{}%
